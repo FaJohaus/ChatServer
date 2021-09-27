@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class ServerWorker extends Thread{
+public class ServerWorker extends Thread {
     private final Socket clientSocket;
     private final Server server;
     private String login = null;
@@ -19,7 +19,7 @@ public class ServerWorker extends Thread{
     }
 
     @Override
-    public void run(){
+    public void run() {
         try {
             handleClientSocket();
         } catch (IOException e) {
@@ -35,20 +35,22 @@ public class ServerWorker extends Thread{
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
-        while ( (line = reader.readLine()) != null ){
+        while ((line = reader.readLine()) != null) {
             String[] tokens = StringUtils.split(line);
-            if(tokens != null && tokens.length > 0){
+            if (tokens != null && tokens.length > 0) {
                 String cmd = tokens[0];
-                if("quit".equalsIgnoreCase(cmd) || "logoff".equalsIgnoreCase(cmd)){
+                if ("quit".equalsIgnoreCase(cmd) || "logoff".equalsIgnoreCase(cmd)) {
                     handleLogoff();
                     break;
-                } else if("login".equalsIgnoreCase(cmd)){
+                } else if ("login".equalsIgnoreCase(cmd)) {
                     handleLogin(outputStream, tokens);
-                } else if ("send".equalsIgnoreCase(cmd)){
+                } else if ("send".equalsIgnoreCase(cmd)) {
                     server.sendToAll(line.substring(4));
-                }
-                else {
-                    String msg= "unknown " + cmd + "\n";
+                } else if ("msg".equalsIgnoreCase(cmd)) {
+
+                    msg(outputStream, tokens);
+                } else {
+                    String msg = "unknown " + cmd + "\n";
                     outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
                 }
             }
@@ -61,7 +63,7 @@ public class ServerWorker extends Thread{
         List<ServerWorker> workerList = server.getWorkerList();
         // send other online users current user's status
         String onlineMsg = "offline " + login + "\n";
-        for (ServerWorker worker : workerList){
+        for (ServerWorker worker : workerList) {
             if (!login.equals(worker.getLogin())) {
                 worker.send(onlineMsg);
             }
@@ -79,11 +81,11 @@ public class ServerWorker extends Thread{
     }
 
     private void handleLogin(OutputStream outputStream, String[] tokens) {
-        if(tokens.length == 3){
+        if (tokens.length == 3) {
             String login = tokens[1];
             String password = tokens[2];
 
-            if (login.equals("guest") && password.equals("guest") || login.equals("jim") && password.equals("jim")){
+            if (login.equals("guest") && password.equals("guest") || login.equals("jim") && password.equals("jim")) {
                 String msg = "ok login\n";
                 try {
                     outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
@@ -96,8 +98,8 @@ public class ServerWorker extends Thread{
                 List<ServerWorker> workerList = server.getWorkerList();
 
                 // send current user all other online logins
-                for (ServerWorker worker : workerList){
-                    if(worker.getLogin() != null){
+                for (ServerWorker worker : workerList) {
+                    if (worker.getLogin() != null) {
                         if (!login.equals(worker.getLogin())) {
                             String msg2 = "online " + worker.getLogin() + "\n";
                             send(msg2);
@@ -106,7 +108,7 @@ public class ServerWorker extends Thread{
                 }
                 // send other online users current user's status
                 String onlineMsg = "online " + login + "\n";
-                for (ServerWorker worker : workerList){
+                for (ServerWorker worker : workerList) {
                     if (!login.equals(worker.getLogin())) {
                         worker.send(onlineMsg);
                     }
@@ -123,12 +125,31 @@ public class ServerWorker extends Thread{
     }
 
     public void send(String msg) {
-        if (login != null){
+        if (login != null) {
             try {
                 outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void msg(OutputStream out, String[] msg) {
+        if (login != null) {
+            System.out.println("deine mom");
+            for (ServerWorker dick : server.workerList) {
+
+                if (dick.login == msg[1]) {
+                    System.out.print("suckt meine");
+                    dick.send(msg[2]);
+
+                } else {
+
+                }
+
+            }
+
+        }
+
     }
 }
