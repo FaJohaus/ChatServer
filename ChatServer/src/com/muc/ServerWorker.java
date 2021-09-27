@@ -136,12 +136,13 @@ public class ServerWorker extends Thread {
 
     public void msg(OutputStream out, String[] msg) {
         if (login != null) {
-            System.out.println("deine mom");
+            ;
             for (ServerWorker dick : server.workerList) {
 
-                if (dick.login == msg[1]) {
-                    System.out.print("suckt meine");
-                    dick.send(msg[2]);
+                if (dick.getLogin().equals(msg[1])) {
+                    msg[0] = "";
+                    msg[1] = "";
+                    dick.send("User " + this.getLogin() + " send u a private message:\n" + String.join(" ", msg));
 
                 } else {
 
