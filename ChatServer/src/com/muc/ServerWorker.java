@@ -6,6 +6,7 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import com.utils.*;
 
 public class ServerWorker extends Thread {
     private final Socket clientSocket;
@@ -154,24 +155,4 @@ public class ServerWorker extends Thread {
 
     }
 
-    public void bgcolor(String[] msg) {
-
-        switch (msg[1]) {
-            case "green":
-
-                break;
-            case "yellow":
-                break;
-            case "blue":
-                break;
-            case "red":
-                break;
-            
-
-            default:
-                bgcolor = ""
-                break;
-        }
-
-    }
 }
