@@ -12,6 +12,8 @@ public class ServerWorker extends Thread {
     private final Server server;
     private String login = null;
     private OutputStream outputStream;
+    private String bgcolor = null;
+    private String txcolor = null;
 
     public ServerWorker(Server server, Socket clientSocket) {
         this.server = server;
@@ -136,20 +138,39 @@ public class ServerWorker extends Thread {
 
     public void msg(OutputStream out, String[] msg) {
         if (login != null) {
-            ;
+
             for (ServerWorker dick : server.workerList) {
 
                 if (dick.getLogin().equals(msg[1])) {
                     msg[0] = "";
                     msg[1] = "";
                     dick.send("User " + this.getLogin() + " send u a private message:\n" + String.join(" ", msg));
-
-                } else {
-
+                    return;
                 }
 
             }
+            this.send("Nix funktioniernen ");
+        }
 
+    }
+
+    public void bgcolor(String[] msg) {
+
+        switch (msg[1]) {
+            case "green":
+
+                break;
+            case "yellow":
+                break;
+            case "blue":
+                break;
+            case "red":
+                break;
+            
+
+            default:
+                bgcolor = ""
+                break;
         }
 
     }
