@@ -10,6 +10,13 @@ public enum Colorss {
     ANSI_BRIGHT_YELLOW("\u001B[93m"), ANSI_BRIGHT_BLUE("\u001B[94m"), ANSI_BRIGHT_PURPLE("\u001B[95m"),
     ANSI_BRIGHT_CYAN("\u001B[96m"), ANSI_BRIGHT_WHITE("\u001B[97m");
 
+    private String col;
+
     private Colorss(String color) {
+        col = color;
+    }
+
+    public String getsit() {
+        return col;
     }
 }

@@ -89,7 +89,7 @@ public class ServerWorker extends Thread {
             String password = tokens[2];
 
             if (login.equals("guest") && password.equals("guest") || login.equals("jim") && password.equals("jim")) {
-                String msg = "ok login\n";
+                String msg = Colorss.ANSI_BRIGHT_RED.getsit() + "ok login\n";
                 try {
                     outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
                 } catch (IOException e) {
@@ -150,7 +150,7 @@ public class ServerWorker extends Thread {
                 }
 
             }
-            this.send("Nix funktioniernen ");
+            this.send(Colorsbg.ANSI_BG_GREEN.getsit() + Colorss.ANSI_RED.getsit() + "Nix funktioniernen ");
         }
 
     }
