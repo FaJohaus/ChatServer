@@ -1,4 +1,4 @@
-package com.utils;
+package com.utils.colors;
 
 public enum Colorss {
 
