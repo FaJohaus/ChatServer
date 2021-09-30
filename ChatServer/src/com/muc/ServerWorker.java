@@ -142,12 +142,12 @@ public class ServerWorker extends Thread {
     public void msg(OutputStream out, String[] msg) {
         if (login != null) {
 
-            for (ServerWorker dick : server.workerList) {
+            for (ServerWorker worker : server.workerList) {
 
-                if (dick.getLogin().equals(msg[1])) {
+                if (worker.getLogin().equals(msg[1])) {
                     msg[0] = "";
                     msg[1] = "";
-                    dick.send("User " + this.getLogin() + " send u a private message:\n" + String.join(" ", msg));
+                    worker.send("User " + this.getLogin() + " send u a private message:\n" + String.join(" ", msg));
                     return;
                 }
 
