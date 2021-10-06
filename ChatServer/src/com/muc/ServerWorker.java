@@ -15,8 +15,6 @@ public class ServerWorker extends Thread {
     private final Server server;
     private String login = null;
     private OutputStream outputStream;
-    private String bgcolor = null;
-    private String txcolor = null;
 
     public ServerWorker(Server server, Socket clientSocket) {
         this.server = server;
