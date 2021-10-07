@@ -52,7 +52,11 @@ public class ServerWorker extends Thread {
                 } else if ("msg".equalsIgnoreCase(cmd)) {
 
                     msg(outputStream, tokens);
-                } else {
+                } else if ("rb".equals(cmd)) {
+
+                }
+
+                else {
                     String msg = "unknown " + cmd + "\n";
                     outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
                 }
