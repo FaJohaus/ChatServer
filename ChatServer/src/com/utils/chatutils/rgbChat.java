@@ -6,6 +6,10 @@ import com.utils.colors.*;
 
 public class rgbChat {
 
+    /**
+     * @param in is the String wich is going to be rbgt
+     * @return retruns a string with differt colors
+     */
     public static String rgbf(String in) {
         String out = "";
         int c = Colorss.values().length;
@@ -23,6 +27,11 @@ public class rgbChat {
         return out;
     }
 
+    /**
+     * 
+     * @param in
+     * @return
+     */
     public static String rgbb(String in) {
         String out = "";
         int c = Colorsbg.values().length;
@@ -39,30 +48,6 @@ public class rgbChat {
 
         return out;
     }
-
-    // public static String rgba(String in) {
-    // String out = "";
-
-    // int c = 0;
-    // int e = 0;
-    // int ce = Colorsbg.values().length;
-    // int ee = Colorss.values().length;
-
-    // for (int i = 0; i < in.length(); i++) {
-    // if (c == ce - 1) {
-    // c = 0;
-    // }
-    // if (e == ee - 1) {
-    // e = 0;
-    // }
-
-    // out += Colorsbg.values()[c].getsit() + Colorss.values()[e].getsit() +
-    // in.charAt(i);
-
-    // }
-
-    // return out;
-    // }
 
     public static void main(String[] args) {
         System.out.println(rgbb("Hallo du kek ich mag dich nicht"));
