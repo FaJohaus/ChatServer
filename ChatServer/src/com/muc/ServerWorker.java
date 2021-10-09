@@ -14,10 +14,12 @@ public class ServerWorker extends Thread {
     private final Server server;
     private String login = null;
     private OutputStream outputStream;
+    private rgbChat rgbChat = null;
 
     public ServerWorker(Server server, Socket clientSocket) {
         this.server = server;
         this.clientSocket = clientSocket;
+        rgbChat = new rgbChat(false);
     }
 
     @Override
@@ -51,8 +53,9 @@ public class ServerWorker extends Thread {
                 } else if ("msg".equalsIgnoreCase(cmd)) {
 
                     msg(outputStream, tokens);
-                } else if ("rb".equals(cmd)) {
-
+                } else if ("rbf".equals(cmd)) {
+                    rgbChat.setActive(!rgbChat.isActive());
+                    send("Now with rainbow effect");
                 }
 
                 else {
@@ -133,7 +136,7 @@ public class ServerWorker extends Thread {
     public void send(String msg) {
         if (login != null) {
             try {
-                outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
+                outputStream.write(rgbChat.Contiues_RGB(msg + "\r\n").getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
                 e.printStackTrace();
             }

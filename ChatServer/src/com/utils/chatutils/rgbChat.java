@@ -7,7 +7,7 @@ public class rgbChat {
 
     // Variables
 
-    private Colorss[] forgroundColor = null;
+    private Colorss[] forgroundColor = Colorss.values();
     private double speed = 1;
     private boolean active = true;
     private double position = 0.0d;
@@ -94,7 +94,7 @@ public class rgbChat {
 
         if (active) {
 
-            if (position > forgroundColor.length - 1)
+            if ((int) position > forgroundColor.length - 2)
                 position = 0;
 
             s = forgroundColor[(int) position].getsit() + s;
