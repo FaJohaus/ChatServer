@@ -6,12 +6,17 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import com.utils.*;
+import com.utils.colors.Colorsbg;
+import com.utils.colors.Colorss;
 
 public class ServerWorker extends Thread {
     private final Socket clientSocket;
     private final Server server;
     private String login = null;
     private OutputStream outputStream;
+    private String bgcolor = null;
+    private String txcolor = null;
 
     public ServerWorker(Server server, Socket clientSocket) {
         this.server = server;
@@ -86,7 +91,7 @@ public class ServerWorker extends Thread {
             String password = tokens[2];
 
             if (login.equals("guest") && password.equals("guest") || login.equals("jim") && password.equals("jim")) {
-                String msg = "ok login\n";
+                String msg = Colorss.ANSI_BRIGHT_RED.getsit() + "ok login\n";
                 try {
                     outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
                 } catch (IOException e) {
@@ -136,21 +141,20 @@ public class ServerWorker extends Thread {
 
     public void msg(OutputStream out, String[] msg) {
         if (login != null) {
-            ;
+
             for (ServerWorker dick : server.workerList) {
 
                 if (dick.getLogin().equals(msg[1])) {
                     msg[0] = "";
                     msg[1] = "";
                     dick.send("User " + this.getLogin() + " send u a private message:\n" + String.join(" ", msg));
-
-                } else {
-
+                    return;
                 }
 
             }
-
+            this.send(Colorsbg.ANSI_BG_GREEN.getsit() + Colorss.ANSI_RED.getsit() + "Nix funktioniernen ");
         }
 
     }
+
 }
