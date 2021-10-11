@@ -1,26 +1,38 @@
 package com.muc;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
-import com.utils.*;
+
+import com.handlers.generalCommands;
+import com.handlers.rgbCommands;
+import com.utils.chatutils.commandhandler.commandHandler;
+import com.utils.chatutils.rgbChatUtil.rgbChat;
 import com.utils.colors.Colorsbg;
 import com.utils.colors.Colorss;
 
 public class ServerWorker extends Thread {
-    private final Socket clientSocket;
-    private final Server server;
-    private String login = null;
-    private OutputStream outputStream;
-    private String bgcolor = null;
-    private String txcolor = null;
+    public final Socket clientSocket;
+    public final Server server;
+    public String login = null;
+    public OutputStream outputStream;
+    public rgbChat rgbChat = null;
+    public commandHandler[] cH = null;
+    public boolean active = true;
 
     public ServerWorker(Server server, Socket clientSocket) {
         this.server = server;
         this.clientSocket = clientSocket;
+        rgbChat = new rgbChat(false);
+
+        cH = new commandHandler[] { new rgbCommands(this), new generalCommands(this) };
+
     }
 
     @Override
@@ -40,31 +52,32 @@ public class ServerWorker extends Thread {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
-        while ((line = reader.readLine()) != null) {
-            String[] tokens = StringUtils.split(line);
-            if (tokens != null && tokens.length > 0) {
-                String cmd = tokens[0];
-                if ("quit".equalsIgnoreCase(cmd) || "logoff".equalsIgnoreCase(cmd)) {
-                    handleLogoff();
-                    break;
-                } else if ("login".equalsIgnoreCase(cmd)) {
-                    handleLogin(outputStream, tokens);
-                } else if ("send".equalsIgnoreCase(cmd)) {
-                    server.sendToAll(line.substring(4));
-                } else if ("msg".equalsIgnoreCase(cmd)) {
+        while ((line = reader.readLine()) != null || active) {
+            boolean success = false;
 
-                    msg(outputStream, tokens);
-                } else {
-                    String msg = "unknown " + cmd + "\n";
-                    outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
+            if (line == null || line.trim().length() == 0)
+                continue;
+
+            String[] parts = line.trim().split(" ");
+            String cmd = parts[0];
+            String[] args = Arrays.copyOfRange(parts, 1, parts.length);
+
+            for (commandHandler cHandler : cH) {
+
+                if (cHandler.handler(cmd, args)) {
+                    success = true;
+                    break;
                 }
             }
-        }
+            if (!success) {
+                send("This was no walid command");
+            }
 
+        }
         clientSocket.close();
     }
 
-    private void handleLogoff() {
+    public void handleLogoff() {
         List<ServerWorker> workerList = server.getWorkerList();
         // send other online users current user's status
         String onlineMsg = "offline " + login + "\n";
@@ -85,10 +98,10 @@ public class ServerWorker extends Thread {
         return login;
     }
 
-    private void handleLogin(OutputStream outputStream, String[] tokens) {
-        if (tokens.length == 3) {
-            String login = tokens[1];
-            String password = tokens[2];
+    public void handleLogin(OutputStream outputStream, String[] tokens) {
+        if (tokens.length == 2) {
+            String login = tokens[0];
+            String password = tokens[1];
 
             if (login.equals("guest") && password.equals("guest") || login.equals("jim") && password.equals("jim")) {
                 String msg = Colorss.ANSI_BRIGHT_RED.getsit() + "ok login\n";
@@ -132,7 +145,7 @@ public class ServerWorker extends Thread {
     public void send(String msg) {
         if (login != null) {
             try {
-                outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
+                outputStream.write(rgbChat.Contiues_RGB(msg + "\r\n").getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -142,12 +155,12 @@ public class ServerWorker extends Thread {
     public void msg(OutputStream out, String[] msg) {
         if (login != null) {
 
-            for (ServerWorker dick : server.workerList) {
+            for (ServerWorker worker : server.workerList) {
 
-                if (dick.getLogin().equals(msg[1])) {
+                if (worker.getLogin().equals(msg[1])) {
                     msg[0] = "";
                     msg[1] = "";
-                    dick.send("User " + this.getLogin() + " send u a private message:\n" + String.join(" ", msg));
+                    worker.send("User " + this.getLogin() + " send u a private message:\n" + String.join(" ", msg));
                     return;
                 }
 
