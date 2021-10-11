@@ -1,4 +1,4 @@
-package com.utils.chatutils;
+package com.utils.chatutils.rgbChatUtil;
 
 import com.utils.colors.Colorsbg;
 import com.utils.colors.Colorss;
