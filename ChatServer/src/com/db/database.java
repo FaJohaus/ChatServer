@@ -1,12 +1,1 @@
-package com.db;
-
-/**
- * database
- */
-public class database {
-
-    database(String url) {
-
-    }
-
-}
+package com.db;import com.utils.cmdUtil;import java.sql.*;/** * database */public class database {    static final String URL = "jdbc:mysql://localhost:3306/userdb";    static final String USER = "root";    static final String PWD = "ypwdthox123";    public static void main(String[] args) {        try {            //Connect to database            Connection myConnection = DriverManager.getConnection(URL, USER, PWD);            //Create a statememt            Statement myStatement = myConnection.createStatement();            //Create a resultset            ResultSet myResultSet = myStatement.executeQuery("select * from users");            ////////////////////////test////////////            String[] columns = {"name", "pwd"};            String[] values = {"Lorem", "ipsum"};            executeSqlQuery(myStatement, writeData("users", columns, values));            System.out.println(writeData("users", columns, values));            System.out.println(writeData("users", columns, values));            ////////////////////////////////////////        } catch (SQLException throwables) {            throwables.printStackTrace();            System.err.println("Es konnte keine Verbindung zur Datenbank aufgebaut werden.");        }    }    public static void executeSqlQuery(Statement myStatement, String query){        //Execute Query String (send commands to the db)        try {            myStatement.executeUpdate(query);        } catch (SQLException throwables) {            throwables.printStackTrace();            System.err.println("Fehler beim Senden eines Befehls an die Datenbank");        }    }    public static String writeData(String dbname, String[] columns, String[] values){        //Klebe alle Zeilen, in die geschrieben werden soll, mit ihren entsprechenden Werten zu einen query String zusammen        String s = "insert into "+dbname                +   " (";        for (String column: columns) {            s += column +", ";        }        s = s.substring(0, s.length() -2);        s += ") values (";        for (String value: values) {            s += "'"+value+"'" + ", ";        }        s = s.substring(0, s.length() -2);        s += ")";        return s;    }}

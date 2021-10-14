@@ -70,7 +70,7 @@ public class ServerWorker extends Thread {
                 }
             }
             if (!success) {
-                send("This was no walid command");
+                send("This was no valid command");
             }
 
         }
