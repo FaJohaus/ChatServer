@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.handlers.generalCommands;
 import com.handlers.rgbCommands;
+import com.handlers.dbCommands;
 import com.utils.chatutils.commandhandler.commandHandler;
 import com.utils.chatutils.rgbChatUtil.rgbChat;
 import com.utils.colors.Colorsbg;
@@ -31,8 +32,7 @@ public class ServerWorker extends Thread {
         this.clientSocket = clientSocket;
         rgbChat = new rgbChat(false);
 
-        cH = new commandHandler[] { new rgbCommands(this), new generalCommands(this) };
-
+        cH = new commandHandler[] { new rgbCommands(this), new generalCommands(this), new dbCommands(this) };
     }
 
     @Override
@@ -70,7 +70,7 @@ public class ServerWorker extends Thread {
                 }
             }
             if (!success) {
-                send("This was no walid command");
+                send("This was no valid command");
             }
 
         }
