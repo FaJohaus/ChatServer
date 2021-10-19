@@ -4,26 +4,35 @@ import com.utils.cmdUtil;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class dbHandler {
+public class dbOperations {
+    private static Statement myStatement;
+    private static database a = new database();
+
     //Java Methoden zum Ausführen aller CRUD-Operationen zur Datenbank
+
+
     public static void main(String[] args) {
 
-        database a = new database();
+        //database a = new database();
 
-
-        //Starte Verbindung zur Datenbank
-        Statement myStatement = a.getMyStatement();
+        //Statement myStatement = a.getMyStatement();
 
         ////////////////////////test////////////
         String[] columns = {"name", "pwd"};
         String[] values = {"Lorem", "ipsum"};
         //executeSqlQuery(myStatement, writeData("users", columns, values));
-        executeSqlQuery(myStatement, updateData("users", "name", "Hans", "name", "Alberto"));
+        //executeSqlQuery(updateData("users", "name", "Alberto", "name", "Alberto123"));
 
         ////////////////////////////////////////
     }
 
-    public static void executeSqlQuery(Statement myStatement, String query){
+    private static void initStatement(){
+        database a = new database();
+        myStatement = a.getMyStatement();
+    }
+
+    public static void executeSqlQuery(String query){
+        initStatement();
         //Execute Query String (send commands to the db)
         try {
             myStatement.executeUpdate(query);
@@ -62,11 +71,12 @@ public class dbHandler {
         return "delete from "+dbname+" where "+indicator+"='"+indicatorValue+"'";
     }
 
-    public static ArrayList<String> readColumn(Statement myStatement, String column){
+    public static ArrayList<String> readColumn(String dbname, String column){
         //Lese eine gesamte Spalte aus der Datenbank aus
+        initStatement();
         ArrayList<String> data = new ArrayList<String>();
         try {
-            ResultSet myResultSet = myStatement.executeQuery("select * from users");
+            ResultSet myResultSet = myStatement.executeQuery("select * from "+dbname);
             while(myResultSet.next()){
                 data.add(myResultSet.getString(column));
             }
@@ -77,9 +87,10 @@ public class dbHandler {
         return data;
     }
 
-    public static String readValue(String dbname, Statement myStatement, String indicator, String indicatorValue, String column){
+    public static String readValue(String dbname, String indicator, String indicatorValue, String column){
         //Lese einen Wert aus einer bestimmten Spalte, wo in der selben Zeile ein Wert an einer bestimmten Spalte einen bestimmten Wert hat
         //(z.B. lese aus der Spalte Passwort, wo in der gleichen Zeile der Wert der Spalte Name "Steffen" ist)
+        initStatement();
         String s = null;
         try {
             ResultSet myResultSet = myStatement.executeQuery("select "+column+"" +
