@@ -16,5 +16,19 @@ Funktionen:
 	- Change pwd (Fabian guckt es sich an, wenns ihm zu blöd ist lässt er es Jonas machen :)) )<br>
 	- Change Color<br>
 	- (iwie schön machen mit ascii-art)<br>
-	
-	
+
+<h2>Befehle:</h2><ul>
+- Create<ul>
+	- create user *username* *password*<br>
+	- create group </ul>
+- Login<ul>
+	- login *username* *password*</ul>
+- Change<ul>
+	- change user name *username* *password* *new_username*<br>
+	- change user pwd *username* *password* *new_password*<br>
+	- change group</ul>
+- Delete<ul>
+	- delete user *username* *password*<br>
+	- delete group</ul>
+- List<ul>
+	- list users</ul>

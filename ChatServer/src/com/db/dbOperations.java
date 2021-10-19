@@ -9,23 +9,7 @@ public class dbOperations {
     private static database a = new database();
 
     //Java Methoden zum Ausführen aller CRUD-Operationen zur Datenbank
-
-
-    public static void main(String[] args) {
-
-        //database a = new database();
-
-        //Statement myStatement = a.getMyStatement();
-
-        ////////////////////////test////////////
-        String[] columns = {"name", "pwd"};
-        String[] values = {"Lorem", "ipsum"};
-        //executeSqlQuery(myStatement, writeData("users", columns, values));
-        //executeSqlQuery(updateData("users", "name", "Alberto", "name", "Alberto123"));
-
-        ////////////////////////////////////////
-    }
-
+    //TODO Starter Methoden für Create, Delete und Update schreiben, dass man sie nicht imemr mit executesqlquery vorher aufrufen muss
     private static void initStatement(){
         database a = new database();
         myStatement = a.getMyStatement();
@@ -104,7 +88,6 @@ public class dbOperations {
                 }
 
                 s = data.get(0);
-                System.out.println(data);
             } catch (Exception e){
                 System.err.println("Daten können nicht aus der Datenbank gelesen werden.");
             }
