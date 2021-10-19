@@ -51,7 +51,7 @@ public class dbCommands extends commandHandler {
                 }
 
                 //Erstelle den Nutzer
-                dbOperations.executeSqlQuery(dbOperations.writeData("users", new String[]{"name", "pwd"}, new String[]{argsUser, argsPwd}));
+                dbOperations.writeData("users", new String[]{"name", "pwd"}, new String[]{argsUser, argsPwd});
                 SW.send("Nutzer " + argsUser + " erfolgreich erstellt.");
 
                 return true;
@@ -85,7 +85,7 @@ public class dbCommands extends commandHandler {
                 }
 
                 //Lösche den Nutzer
-                dbOperations.executeSqlQuery(dbOperations.deleteData("users", "name", argsUser));
+                dbOperations.deleteData("users", "name", argsUser);
                 SW.send("Nutzer wurde erfolgreich gelöscht.");
                 return true;
 
@@ -126,12 +126,12 @@ public class dbCommands extends commandHandler {
                         return true;
                     }
 
-                    dbOperations.executeSqlQuery(dbOperations.updateData("users", "name", argsUser, "name", argsNewValue));
+                    dbOperations.updateData("users", "name", argsUser, "name", argsNewValue);
                     SW.send("Nutzer "+argsUser+" wurde erfolgreich zu " +argsNewValue+" geändert.");
                     return true;
 
                 } else if(argsChange.equals("pwd")){
-                    dbOperations.executeSqlQuery(dbOperations.updateData("users", "name", argsUser, "pwd", argsNewValue));
+                    dbOperations.updateData("users", "name", argsUser, "pwd", argsNewValue);
                     SW.send("Passwort von "+argsUser+" wurde erfolgreich geändert.");
                     return true;
                 }

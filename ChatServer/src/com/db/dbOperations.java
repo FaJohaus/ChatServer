@@ -9,13 +9,12 @@ public class dbOperations {
     private static database a = new database();
 
     //Java Methoden zum Ausführen aller CRUD-Operationen zur Datenbank
-    //TODO Starter Methoden für Create, Delete und Update schreiben, dass man sie nicht imemr mit executesqlquery vorher aufrufen muss
     private static void initStatement(){
         database a = new database();
         myStatement = a.getMyStatement();
     }
 
-    public static void executeSqlQuery(String query){
+    private static void executeSqlQuery(String query){
         initStatement();
         //Execute Query String (send commands to the db)
         try {
@@ -26,7 +25,7 @@ public class dbOperations {
         }
     }
 
-    public static String writeData(String dbname, String[] columns, String[] values){
+    private static String writeDataString(String dbname, String[] columns, String[] values){
         //Klebe alle Zeilen, in die geschrieben werden soll, mit ihren entsprechenden Werten zu einen query String zusammen
         String s = "insert into "+dbname
                 +   " (";
@@ -44,16 +43,28 @@ public class dbOperations {
 
         return s;
     }
+    public static void writeData(String dbname, String[] columns, String[] values){
+        executeSqlQuery(writeDataString(dbname, columns, values));
+    }
 
-    public static String updateData(String dbname, String indicator, String indicatorValue, String column2change, String newValue){
+
+    private static String updateDataString(String dbname, String indicator, String indicatorValue, String column2change, String newValue){
         return "update "+dbname
                 +   " set "+column2change+"='"+newValue+"'"
                 +   " where "+indicator+"='"+indicatorValue+"'";
     }
+    public static void updateData(String dbname, String indicator, String indicatorValue, String column2change, String newValue){
+        executeSqlQuery(updateDataString(dbname, indicator, indicatorValue, column2change, newValue));
+    }
 
-    public static String deleteData(String dbname, String indicator, String indicatorValue){
+
+    private static String deleteDataString(String dbname, String indicator, String indicatorValue){
         return "delete from "+dbname+" where "+indicator+"='"+indicatorValue+"'";
     }
+    public static void deleteData(String dbname, String indicator, String indicatorValue){
+        executeSqlQuery(deleteDataString(dbname, indicator, indicatorValue));
+    }
+
 
     public static ArrayList<String> readColumn(String dbname, String column){
         //Lese eine gesamte Spalte aus der Datenbank aus
