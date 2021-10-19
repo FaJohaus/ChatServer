@@ -19,7 +19,7 @@ Funktionen:
 
 <h2>Befehle:</h2><ul>
 - Create<ul>
-	- create user <username> *password*<br>
+	- create user *username* *password*<br>
 	- create group </ul>
 - Login<ul>
 	- login *username* *password*</ul>
