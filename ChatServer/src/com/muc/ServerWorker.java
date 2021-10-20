@@ -18,6 +18,8 @@ import com.utils.chatutils.rgbChatUtil.rgbChat;
 import com.utils.colors.Colorsbg;
 import com.utils.colors.Colorss;
 
+import com.db.dbOperations;
+
 public class ServerWorker extends Thread {
     public final Socket clientSocket;
     public final Server server;
@@ -103,8 +105,8 @@ public class ServerWorker extends Thread {
             String login = tokens[0];
             String password = tokens[1];
 
-            if (login.equals("guest") && password.equals("guest") || login.equals("jim") && password.equals("jim")) {
-                String msg = Colorss.ANSI_BRIGHT_RED.getsit() + "ok login\n";
+            if(dbOperations.userExists(login) && dbOperations.pwdCorrect(login, password)) {
+                String msg = Colorss.ANSI_BRIGHT_RED.getsit() + "Erfolgreich angemeldet als "+login+"\n";
                 try {
                     outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
                 } catch (IOException e) {
@@ -143,12 +145,10 @@ public class ServerWorker extends Thread {
     }
 
     public void send(String msg) {
-        if (login != null) {
-            try {
-                outputStream.write(rgbChat.Contiues_RGB(msg + "\r\n").getBytes(StandardCharsets.UTF_8));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            outputStream.write(rgbChat.Contiues_RGB(msg + "\r\n").getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -170,4 +170,13 @@ public class ServerWorker extends Thread {
 
     }
 
+    public void sendTo(String receiver, String msg){
+        if (login != null){
+            for (ServerWorker worker: server.workerList) {
+                if(worker.getLogin().equals(receiver)){
+                    worker.send(msg);
+                }
+            }
+        }
+    }
 }

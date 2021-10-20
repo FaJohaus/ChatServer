@@ -109,4 +109,23 @@ public class dbOperations {
 
         return s;
     }
+
+    //Spezifische Methoden für users
+    public static boolean userExists(String name2check){
+        ArrayList<String> userNames = readColumn("users", "name");
+
+        boolean userExists = false;
+        for (String name: userNames) {
+            if (name.equals(name2check)) {
+                userExists = true;
+            }
+        }
+        return userExists;
+    }
+
+    public static boolean pwdCorrect(String user2check, String pwd2check){
+        String pwd = readValue("users", "name", user2check, "pwd");
+        if(pwd.equals(pwd2check)){return true;}
+        else{return false;}
+    }
 }

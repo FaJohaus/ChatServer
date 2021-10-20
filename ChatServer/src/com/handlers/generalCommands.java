@@ -18,7 +18,6 @@ public class generalCommands extends commandHandler {
 
         if ("quit".equalsIgnoreCase(cmd) || "logoff".equalsIgnoreCase(cmd)) {
             SW.handleLogoff();
-
         } else if ("login".equalsIgnoreCase(cmd)) {
             SW.handleLogin(SW.outputStream, args);
             return true;
@@ -26,8 +25,10 @@ public class generalCommands extends commandHandler {
             SW.server.sendToAll(String.join(" " + args));
             return true;
         } else if ("msg".equalsIgnoreCase(cmd)) {
-
             SW.msg(SW.outputStream, args);
+            return true;
+        } else if ("sendto".equalsIgnoreCase(cmd)){
+            SW.sendTo(args[0], args[1]);
             return true;
         }
 

@@ -13,24 +13,6 @@ public class dbCommands extends commandHandler {
         super(SW);
     }
 
-    private boolean userExists(String name2check){
-        ArrayList<String> userNames = dbOperations.readColumn("users", "name");
-
-        boolean userExists = false;
-        for (String name: userNames) {
-            if (name.equals(name2check)) {
-                userExists = true;
-            }
-        }
-        return userExists;
-    }
-
-    private boolean pwdCorrect(String user2check, String pwd2check){
-        String pwd = dbOperations.readValue("users", "name", user2check, "pwd");
-        if(pwd.equals(pwd2check)){return true;}
-        else{return false;}
-    }
-
     @Override
     public boolean handler(String cmd, String[] args) {
         if ("create".equalsIgnoreCase(cmd)) {
@@ -45,7 +27,7 @@ public class dbCommands extends commandHandler {
                 String argsPwd = args[2];
 
                 //Überprüfe, ob der Benutzername verfügbar ist
-                if(userExists(argsUser)){
+                if(dbOperations.userExists(argsUser)){
                     SW.send("Nutzername "+argsUser+" vergeben, versuche einen anderen");
                     return true;
                 }
@@ -54,12 +36,13 @@ public class dbCommands extends commandHandler {
                 dbOperations.writeData("users", new String[]{"name", "pwd"}, new String[]{argsUser, argsPwd});
                 SW.send("Nutzer " + argsUser + " erfolgreich erstellt.");
 
+                //Den Nutzer anmelden
+                SW.handleLogin(SW.outputStream, new String[]{argsUser, argsPwd});
+
                 return true;
             } else if (args[0].equals("group")) {
                 // TODO UserGruppen erstellen
             }
-
-        } else if ("login".equalsIgnoreCase(cmd)) {
 
         } else if ("delete".equalsIgnoreCase(cmd)) {
             //Überprüfe, was gelöscht werden soll (User, Gruppe?)
@@ -73,13 +56,13 @@ public class dbCommands extends commandHandler {
                 String argsPwd = args[2];
 
                 //Überprüfe, ob der Nutzer existiert
-                if(!userExists(argsUser)){
+                if(!dbOperations.userExists(argsUser)){
                     SW.send("Der Nutzer "+argsUser+" existiert nicht.");
                     return true;
                 }
 
                 //Überprüfe, ob das eingebene Passwort richtig ist
-                if(!pwdCorrect(argsUser, argsPwd)){
+                if(!dbOperations.pwdCorrect(argsUser, argsPwd)){
                     SW.send("Falsches Passwort für " +argsUser);
                     return true;
                 }
@@ -108,12 +91,12 @@ public class dbCommands extends commandHandler {
                 String argsNewValue = args[4];
 
                 //Überprüfe, ob der Nutzer existiert
-                if(!userExists(argsUser)){
+                if(!dbOperations.userExists(argsUser)){
                     SW.send("Der Nutzer "+argsUser+" existiert nicht.");
                     return true;
                 }
                 //Überprüfe, ob das Passwort korrekt ist
-                if(!pwdCorrect(argsUser, argsPwd)){
+                if(!dbOperations.pwdCorrect(argsUser, argsPwd)){
                     SW.send("Falsches Passwort für " +argsUser);
                     return true;
                 }
@@ -121,7 +104,7 @@ public class dbCommands extends commandHandler {
                 //Überprüfe, was am user verändert werden soll (name, pwd?)
                 if(argsChange.equals("name")){
                     //Überprüfe, ob der neue Nutzername verfügbar ist
-                    if(userExists(argsNewValue)){
+                    if(dbOperations.userExists(argsNewValue)){
                         SW.send("Nutzername "+argsNewValue+" vergeben, versuche einen anderen");
                         return true;
                     }

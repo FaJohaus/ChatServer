@@ -15,6 +15,7 @@ public class Server extends Thread {
 
     public Server(int serverPort) {
         //Überprüfe Datenbankverbindung
+        //TODO besser machen, weil funktioniert zwar ist aber unnötig kompliziert
         database a = new database();
         Statement myStatement = a.getMyStatement();
         if(myStatement == null){
