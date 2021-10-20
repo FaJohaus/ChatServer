@@ -26,6 +26,11 @@ public class dbCommands extends commandHandler {
                 String argsUser = args[1];
                 String argsPwd = args[2];
 
+                if(argsUser.length() > 30 || argsPwd.length() > 30){
+                    SW.send("Nutzername und Passwort dürfen maximal 30 Zeichen lang sein");
+                    return true;
+                }
+
                 //Überprüfe, ob der Benutzername verfügbar ist
                 if(dbOperations.userExists(argsUser)){
                     SW.send("Nutzername "+argsUser+" vergeben, versuche einen anderen");
@@ -89,6 +94,11 @@ public class dbCommands extends commandHandler {
                 String argsPwd = args[3];
                 String argsChange = args[1];
                 String argsNewValue = args[4];
+
+                if(argsNewValue.length() > 30){
+                    SW.send("Nutzername und Passwort dürfen maximal 30 Zeichen lang sein");
+                    return true;
+                }
 
                 //Überprüfe, ob der Nutzer existiert
                 if(!dbOperations.userExists(argsUser)){
