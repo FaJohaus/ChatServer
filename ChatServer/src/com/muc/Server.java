@@ -3,8 +3,10 @@ package com.muc;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import com.db.database;
 
 public class Server extends Thread {
     private final int serverPort;
@@ -12,6 +14,14 @@ public class Server extends Thread {
     public ArrayList<ServerWorker> workerList = new ArrayList<>();
 
     public Server(int serverPort) {
+        //Überprüfe Datenbankverbindung
+        database a = new database();
+        Statement myStatement = a.getMyStatement();
+        if(myStatement == null){
+            System.err.println("Es konnte keine Verbindung zur Datenbank aufgebaut werden.");
+            System.exit(1);
+        }
+
         this.serverPort = serverPort;
     }
 
