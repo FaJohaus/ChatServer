@@ -111,6 +111,9 @@ public class dbCommands extends commandHandler {
 
                     dbOperations.updateData("users", "name", argsUser, "name", argsNewValue);
                     SW.send("Nutzer "+argsUser+" wurde erfolgreich zu " +argsNewValue+" geändert.");
+
+                    //Den Nutzer anmelden (Hier im Gegensatz zu nach change pwd notwendig, damit unter worker.getlogin nun der neue name hinterlegt ist)
+                    SW.handleLogin(SW.outputStream, new String[]{argsNewValue, argsPwd});
                     return true;
 
                 } else if(argsChange.equals("pwd")){

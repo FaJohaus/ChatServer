@@ -19,16 +19,21 @@ Funktionen:
 
 <h2>Befehle:</h2><ul>
 - Create<ul>
-	- create user *username* *password*<br>
-	- create group </ul>
+    - create user *username* *password*<br>
+    - create group </ul>
 - Login<ul>
-	- login *username* *password*</ul>
+    - login *username* *password*</ul>
 - Change<ul>
-	- change user name *username* *password* *new_username*<br>
-	- change user pwd *username* *password* *new_password*<br>
-	- change group</ul>
+    - change user name *username* *password* *new_username*<br>
+    - change user pwd *username* *password* *new_password*<br>
+    - change group</ul>
 - Delete<ul>
-	- delete user *username* *password*<br>
-	- delete group</ul>
+    - delete user *username* *password*<br>
+    - delete group</ul>
 - List<ul>
-	- list users</ul>
+    - list users</ul>
+- Send<ul>
+    - send *message*</ul>
+- Sendto<ul>
+    - sendto *username* *message*<br>
+    - sendto group *groupname* *message*

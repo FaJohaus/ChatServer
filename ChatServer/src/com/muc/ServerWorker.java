@@ -152,29 +152,11 @@ public class ServerWorker extends Thread {
         }
     }
 
-    public void msg(OutputStream out, String[] msg) {
-        if (login != null) {
-
-            for (ServerWorker worker : server.workerList) {
-
-                if (worker.getLogin().equals(msg[1])) {
-                    msg[0] = "";
-                    msg[1] = "";
-                    worker.send("User " + this.getLogin() + " send u a private message:\n" + String.join(" ", msg));
-                    return;
-                }
-
-            }
-            this.send(Colorsbg.ANSI_BG_GREEN.getsit() + Colorss.ANSI_RED.getsit() + "Nix funktioniernen ");
-        }
-
-    }
-
     public void sendTo(String receiver, String msg){
         if (login != null){
-            for (ServerWorker worker: server.workerList) {
-                if(worker.getLogin().equals(receiver)){
-                    worker.send(msg);
+            for (ServerWorker worker2getMsg: server.workerList) {
+                if(worker2getMsg.getLogin().equals(receiver)){
+                    worker2getMsg.send(login+": " +msg);
                 }
             }
         }
