@@ -15,13 +15,7 @@ public class Server extends Thread {
 
     public Server(int serverPort) {
         //Überprüfe Datenbankverbindung
-        //TODO besser machen, weil funktioniert zwar ist aber unnötig kompliziert
         database a = new database();
-        Statement myStatement = a.getMyStatement();
-        if(myStatement == null){
-            System.err.println("Es konnte keine Verbindung zur Datenbank aufgebaut werden.");
-            System.exit(1);
-        }
 
         this.serverPort = serverPort;
     }
