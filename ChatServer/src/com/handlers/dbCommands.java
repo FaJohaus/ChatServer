@@ -53,28 +53,27 @@ public class dbCommands extends commandHandler {
         } else if ("delete".equalsIgnoreCase(cmd)) {
             //Überprüfe, was gelöscht werden soll (User, Gruppe?)
             if (args[0].equalsIgnoreCase("user")) {
-                if (args.length != 3) {
-                    SW.send("Fehlerhafte Eingabe, tippe 'delete user <name> <pwd>'");
+                if (args.length != 2) {
+                    SW.send("Fehlerhafte Eingabe, tippe 'delete user <pwd>'");
                     return true;
                 }
-
-                String argsUser = args[1];
-                String argsPwd = args[2];
+                String user = SW.getLogin();
+                String argsPwd = args[1];
 
                 //Überprüfe, ob der Nutzer existiert
-                if(!dbOperations.userExists(argsUser)){
-                    SW.send("Der Nutzer "+argsUser+" existiert nicht.");
+                if(!dbOperations.userExists(user)){
+                    SW.send("Der Nutzer "+user+" existiert nicht.");
                     return true;
                 }
 
                 //Überprüfe, ob das eingebene Passwort richtig ist
-                if(!dbOperations.pwdCorrect(argsUser, argsPwd)){
-                    SW.send("Falsches Passwort für " +argsUser);
+                if(!dbOperations.pwdCorrect(user, argsPwd)){
+                    SW.send("Falsches Passwort für " +user);
                     return true;
                 }
 
                 //Lösche den Nutzer
-                dbOperations.deleteData("users", "name", argsUser);
+                dbOperations.deleteData("users", "name", user);
                 SW.send("Nutzer wurde erfolgreich gelöscht.");
                 return true;
 
@@ -86,15 +85,16 @@ public class dbCommands extends commandHandler {
         } else if ("change".equalsIgnoreCase(cmd)) {
             //Überprüfe, was verändert werden soll (User, Gruppe?)
             if (args[0].equalsIgnoreCase("user")) {
-                if (args.length != 5) {
-                    SW.send("Fehlerhafte Eingabe, tippe 'change user name/pwd <name> <pwd> <new name/pwd>'");
+                if (args.length != 4) {
+                    SW.send("Fehlerhafte Eingabe, tippe 'change user name/pwd <pwd> <new name/pwd>'");
                     return true;
                 }
 
-                String argsUser = args[2];
-                String argsPwd = args[3];
+
+                String user = SW.getLogin();
+                String argsPwd = args[2];
                 String argsChange = args[1];
-                String argsNewValue = args[4];
+                String argsNewValue = args[3];
 
                 if(argsNewValue.length() > 20){
                     SW.send("Nutzername und Passwort dürfen maximal 20 Zeichen lang sein");
@@ -102,13 +102,13 @@ public class dbCommands extends commandHandler {
                 }
 
                 //Überprüfe, ob der Nutzer existiert
-                if(!dbOperations.userExists(argsUser)){
-                    SW.send("Der Nutzer "+argsUser+" existiert nicht.");
+                if(!dbOperations.userExists(user)){
+                    SW.send("Der Nutzer "+user+" existiert nicht.");
                     return true;
                 }
                 //Überprüfe, ob das Passwort korrekt ist
-                if(!dbOperations.pwdCorrect(argsUser, argsPwd)){
-                    SW.send("Falsches Passwort für " +argsUser);
+                if(!dbOperations.pwdCorrect(user, argsPwd)){
+                    SW.send("Falsches Passwort für " +user);
                     return true;
                 }
 
@@ -120,16 +120,16 @@ public class dbCommands extends commandHandler {
                         return true;
                     }
 
-                    dbOperations.updateData("users", "name", argsUser, "name", argsNewValue);
-                    SW.send("Nutzer "+argsUser+" wurde erfolgreich zu " +argsNewValue+" geändert.");
+                    dbOperations.updateData("users", "name", user, "name", argsNewValue);
+                    SW.send("Nutzer "+user+" wurde erfolgreich zu " +argsNewValue+" geändert.");
 
                     //Den Nutzer anmelden (Hier im Gegensatz zu nach change pwd notwendig, damit unter worker.getlogin nun der neue name hinterlegt ist)
                     SW.handleLogin(SW.outputStream, new String[]{argsNewValue, argsPwd});
                     return true;
 
                 } else if(argsChange.equalsIgnoreCase("pwd")){
-                    dbOperations.updateData("users", "name", argsUser, "pwd", argsNewValue);
-                    SW.send("Passwort von "+argsUser+" wurde erfolgreich geändert.");
+                    dbOperations.updateData("users", "name", user, "pwd", argsNewValue);
+                    SW.send("Passwort von "+user+" wurde erfolgreich geändert.");
                     return true;
                 }
 

@@ -26,11 +26,11 @@ Funktionen:
 - WhoAmI<ul>
 	- whoami</ul>
 - Change<ul>
-    - change user name *username* *password* *new_username*<br>
-    - change user pwd *username* *password* *new_password*<br>
+    - change user name *password* *new_username*<br>
+    - change user pwd *password* *new_password*<br>
     - change group</ul>
 - Delete<ul>
-    - delete user *username* *password*<br>
+    - delete user *password*<br>
     - delete group</ul>
 - List<ul>
     - list users</ul>
