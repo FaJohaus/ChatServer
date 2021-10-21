@@ -153,7 +153,10 @@ public class dbCommands extends commandHandler {
 
                 long now = System.currentTimeMillis();
                 for (String[] a: usersWithLastonl) {
-                    SW.send(a[0] + mySpacing(20 - a[0].length()) + time2String(now, a[1]));
+                    //Sende alle Nutzer, außer den Nutzer der anfragt
+                    if(!SW.equalsLogin(a[0])){
+                        SW.send(a[0] + mySpacing(20 - a[0].length()) + time2String(now, a[1]));
+                    }
                 }
 
                 return true;

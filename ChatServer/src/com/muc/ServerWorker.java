@@ -145,6 +145,10 @@ public class ServerWorker extends Thread {
         return false;
     }
 
+    public boolean equalsLogin(String s){
+        return login.equals(s);
+    }
+
     public void send(String msg) {
         if(!loginIsNull()){
             try {
