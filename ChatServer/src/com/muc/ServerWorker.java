@@ -140,7 +140,22 @@ public class ServerWorker extends Thread {
         }
     }
 
+    public boolean loginIsNull(){
+        if(login == null) return true;
+        return false;
+    }
+
     public void send(String msg) {
+        if(!loginIsNull()){
+            try {
+                outputStream.write(rgbChat.Contiues_RGB(msg + "\r\n").getBytes(StandardCharsets.UTF_8));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void send2Null(String msg){
         try {
             outputStream.write(rgbChat.Contiues_RGB(msg + "\r\n").getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
@@ -149,20 +164,16 @@ public class ServerWorker extends Thread {
     }
 
     public void sendTo(String receiver, String msg){
-        if (login != null){
-            for (ServerWorker worker2getMsg: server.workerList) {
-                if(worker2getMsg.getLogin().equals(receiver)){
-                    worker2getMsg.send(login+": " +msg);
-                }
+        for (ServerWorker worker2getMsg: server.workerList) {
+            if(worker2getMsg.getLogin().equals(receiver)){
+                worker2getMsg.send(login+": " +msg);
             }
         }
     }
 
     public void sendToAll(String msg){
-        if(login != null){
-            for (ServerWorker worker: server.workerList) {
-                worker.send(login+": " +msg);
-            }
+        for (ServerWorker worker: server.workerList) {
+            worker.send(login+": " +msg);
         }
     }
 }

@@ -40,11 +40,11 @@ public class dbCommands extends commandHandler {
 
                 //Erstelle den Nutzer
                 dbOperations.writeData("users", new String[]{"name", "pwd"}, new String[]{argsUser, argsPwd});
-                SW.send("Nutzer " + argsUser + " erfolgreich erstellt.");
 
                 //Den Nutzer anmelden
                 SW.handleLogin(SW.outputStream, new String[]{argsUser, argsPwd});
 
+                SW.send("Nutzer " + argsUser + " erfolgreich erstellt.");
                 return true;
             } else if (args[0].equalsIgnoreCase("group")) {
                 // TODO UserGruppen erstellen

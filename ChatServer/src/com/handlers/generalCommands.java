@@ -16,6 +16,10 @@ public class generalCommands extends commandHandler {
 
     @Override
     public boolean handler(String cmd, String[] args) {
+        if(SW.loginIsNull() && !"create".equalsIgnoreCase(cmd) && !"login".equalsIgnoreCase(cmd)){
+            SW.send2Null("Melde dich zuerst mit 'create <user> <pwd>' an oder logge dich mit 'login <user> <pwd>' ein.");
+            return true;
+        }
 
         if ("quit".equalsIgnoreCase(cmd) || "logoff".equalsIgnoreCase(cmd)) {
             SW.handleLogoff();
