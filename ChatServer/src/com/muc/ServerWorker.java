@@ -89,6 +89,8 @@ public class ServerWorker extends Thread {
             }
         }
 
+        //Setze den lastonl in der db auf die akutelle Zeit
+        dbOperations.updateData("users","name",login,"lastonl",String.valueOf(System.currentTimeMillis()));
         try {
             clientSocket.close();
         } catch (IOException e) {
@@ -124,6 +126,9 @@ public class ServerWorker extends Thread {
                         worker.send(onlineMsg);
                     }
                 }
+
+                //Setze den lastonl in der db auf "0" (soll heißen, der Nutzer ist online)
+                dbOperations.updateData("users", "name", login, "lastonl", "online");
             } else {
                 String msg = "error login\n";
                 try {

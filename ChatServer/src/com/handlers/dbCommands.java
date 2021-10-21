@@ -5,6 +5,7 @@ import com.utils.chatutils.commandhandler.commandHandler;
 import com.db.dbOperations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class dbCommands extends commandHandler {
 
@@ -143,7 +144,18 @@ public class dbCommands extends commandHandler {
         } else if("list".equalsIgnoreCase(cmd)){
             //Überprüfe, was aufgelistet werden soll
             if(args[0].equalsIgnoreCase("users")){
+                //Hole eine Liste aller User von der db und speichere sie mit ihrem lastonl Wert
+                ArrayList<String> users = dbOperations.readColumn("users","name");
+                ArrayList<String[]> usersWithLastonl = new ArrayList<String[]>();
+                for (String user: users) {
+                    usersWithLastonl.add(new String[]{user, dbOperations.readValue("users", "name", user, "lastonl")});
+                }
 
+                for (String[] a: usersWithLastonl) {
+                    SW.send(Arrays.toString(a));
+                }
+
+                return true;
             } else if(args[0].equalsIgnoreCase("groups")){
                 // TODO list groups (alle gruppen des Nutzers in einer column speichern)
             } else if(args[0].equalsIgnoreCase("messages")){
