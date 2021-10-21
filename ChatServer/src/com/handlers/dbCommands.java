@@ -50,6 +50,15 @@ public class dbCommands extends commandHandler {
                 // TODO UserGruppen erstellen
             }
 
+        } else if ("login".equalsIgnoreCase(cmd)) {
+            SW.handleLogin(SW.outputStream, args);
+            //Überprüfe, ob der Nutzer noch Nachrichten zu lesen hat
+            String user = SW.getLogin();
+            if(dbOperations.tableExists("messages"+user)){
+                SW.send("Du hast noch Nachrichten zu lesen, du kannst sie mit 'list messages' sehen.");
+            }
+
+            return true;
         } else if ("delete".equalsIgnoreCase(cmd)) {
             //Überprüfe, was gelöscht werden soll (User, Gruppe, Message?)
             if (args[0].equalsIgnoreCase("user")) {
@@ -138,8 +147,16 @@ public class dbCommands extends commandHandler {
                     dbOperations.updateData("users", "name", user, "name", argsNewValue);
                     SW.send("Nutzer "+user+" wurde erfolgreich zu " +argsNewValue+" geändert.");
 
+                    //Falls der Nutzer ungelesene Nachrichten hat, den table umbenenen
+                    //TODO hier wäre es jetzt mit user IDs wesentlich praktischer, aber dann müsste ich eigentlich fast alles was hier mit der Datenbank zu tun hat
+                    //TODO neu schreiben und da habe ich wirklich keine Lust zu
+                    if(dbOperations.tableExists("messages"+ user)){
+                        dbOperations.changeTableName("messages"+ user, "messages"+ argsNewValue);
+                    }
+
                     //Den Nutzer anmelden (Hier im Gegensatz zu nach change pwd notwendig, damit unter worker.getlogin nun der neue name hinterlegt ist)
                     SW.handleLogin(SW.outputStream, new String[]{argsNewValue, argsPwd});
+
                     return true;
 
                 } else if(argsChange.equalsIgnoreCase("pwd")){
@@ -186,7 +203,7 @@ public class dbCommands extends commandHandler {
                 }
                 ArrayList<String> messages = dbOperations.readColumn("messages"+user, "messages");
                 for (String message: messages) {
-                    SW.send("Nachricht:          " + message);
+                    SW.send("Nachricht:            " + message);
                 }
                 SW.send("Du kannst diese Nachrichten mit 'delete messages' löschen, wenn du willst.");
 
@@ -194,6 +211,12 @@ public class dbCommands extends commandHandler {
             }
         } else if ("sendto".equalsIgnoreCase(cmd)){
             String receiver = args[0];
+
+            //Überprüfe, ob der Empfänger existiert
+            if(!dbOperations.userExists(receiver)){
+                SW.send("Der Nutzer " + receiver + " existiert nicht.");
+                return true;
+            }
 
             String[] a = Arrays.copyOfRange(args, 1, args.length);
             String message = "(Privat) "+SW.getLogin()+": "+String.join(" ", a);
@@ -207,7 +230,7 @@ public class dbCommands extends commandHandler {
                 }
                 dbOperations.createTable("messages"+receiver,"messages", 1000);
                 dbOperations.writeData("messages"+receiver, new String[]{"messages"}, new String[]{message});
-                SW.send(receiver+" ist grade nicht online, deine Nachricht wurde gespeichert und er/sie kann sie lesen, wenn er online ist.");
+                SW.send(receiver+" ist grade nicht online, deine Nachricht wurde gespeichert und er/sie kann sie lesen, wenn er/sie online ist.");
             }
 
             return true;

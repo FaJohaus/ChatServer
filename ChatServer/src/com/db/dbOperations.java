@@ -139,6 +139,12 @@ public class dbOperations {
         }
     }
 
+    public static void changeTableName(String oldName, String newName){
+        String s = "ALTER TABLE `"+oldName+"` " +
+                "RENAME TO `"+newName+"` ;";
+        executeSqlQuery(s);
+    }
+
     //Spezifische Methoden für users
     public static boolean userExists(String name2check){
         ArrayList<String> userNames = readColumn("users", "name");

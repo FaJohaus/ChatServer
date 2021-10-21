@@ -19,14 +19,11 @@ public class generalCommands extends commandHandler {
             return true;
         }
 
-        //(sendto Befehl wurde nach dbCommands verschoben, da er nun dbOperationen verwendet.)
+        //(sendto und login Befehl wurde nach dbCommands verschoben, da er nun dbOperationen verwendet.)
         if ("quit".equalsIgnoreCase(cmd) || "leave".equalsIgnoreCase(cmd)) {
             SW.handleQuit();
         } else if ("logout".equalsIgnoreCase(cmd) || "logoff".equalsIgnoreCase(cmd)){
             SW.handleLogout();
-        } else if ("login".equalsIgnoreCase(cmd)) {
-            SW.handleLogin(SW.outputStream, args);
-            return true;
         } else if ("send".equalsIgnoreCase(cmd)) {
             SW.sendToAll("(An Alle) " +SW.getLogin()+": "+String.join(" ", args));
             return true;
