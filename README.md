@@ -3,7 +3,7 @@
 <h2>Befehle:</h2><ul>
 - Create<ul>
     - create user *username* *password*<br>
-    - create group </ul>
+    - create group *groupname* *user_to_add1* *user_to_add2* *user_to_add3* ...</ul>
 - Login<ul>
     - login *username* *password*</ul>
 - Logout/Logoff<ul>

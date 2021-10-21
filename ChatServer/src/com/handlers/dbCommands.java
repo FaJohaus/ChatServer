@@ -47,7 +47,14 @@ public class dbCommands extends commandHandler {
                 SW.send("Nutzer " + argsUser + " erfolgreich erstellt.");
                 return true;
             } else if (args[0].equalsIgnoreCase("group")) {
-                // TODO UserGruppen erstellen
+                String user = SW.getLogin();
+                String argsGroupName = args[0];
+                ArrayList<String> users2Add = new ArrayList<>();
+                users2Add.add(user);
+                for (String userFromArgs: args) {
+                    //arbeite hier grade noch dran aber will das mal hochladen, weil wenn meine festplatte abkackt ist ein tag arbeit fürn arsch
+                }
+
             }
 
         } else if ("login".equalsIgnoreCase(cmd)) {
