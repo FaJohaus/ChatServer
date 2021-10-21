@@ -25,9 +25,9 @@ public class dbOperations {
         }
     }
 
-    private static String writeDataString(String dbname, String[] columns, String[] values){
+    private static String writeDataString(String table, String[] columns, String[] values){
         //Klebe alle Zeilen, in die geschrieben werden soll, mit ihren entsprechenden Werten zu einen query String zusammen
-        String s = "insert into "+dbname
+        String s = "insert into "+table
                 +   " (";
 
         for (String column: columns) {
@@ -43,35 +43,35 @@ public class dbOperations {
 
         return s;
     }
-    public static void writeData(String dbname, String[] columns, String[] values){
-        executeSqlQuery(writeDataString(dbname, columns, values));
+    public static void writeData(String table, String[] columns, String[] values){
+        executeSqlQuery(writeDataString(table, columns, values));
     }
 
 
-    private static String updateDataString(String dbname, String indicator, String indicatorValue, String column2change, String newValue){
-        return "update "+dbname
+    private static String updateDataString(String table, String indicator, String indicatorValue, String column2change, String newValue){
+        return "update "+table
                 +   " set "+column2change+"='"+newValue+"'"
                 +   " where "+indicator+"='"+indicatorValue+"'";
     }
-    public static void updateData(String dbname, String indicator, String indicatorValue, String column2change, String newValue){
-        executeSqlQuery(updateDataString(dbname, indicator, indicatorValue, column2change, newValue));
+    public static void updateData(String table, String indicator, String indicatorValue, String column2change, String newValue){
+        executeSqlQuery(updateDataString(table, indicator, indicatorValue, column2change, newValue));
     }
 
 
-    private static String deleteDataString(String dbname, String indicator, String indicatorValue){
-        return "delete from "+dbname+" where "+indicator+"='"+indicatorValue+"'";
+    private static String deleteDataString(String table, String indicator, String indicatorValue){
+        return "delete from "+table+" where "+indicator+"='"+indicatorValue+"'";
     }
-    public static void deleteData(String dbname, String indicator, String indicatorValue){
-        executeSqlQuery(deleteDataString(dbname, indicator, indicatorValue));
+    public static void deleteData(String table, String indicator, String indicatorValue){
+        executeSqlQuery(deleteDataString(table, indicator, indicatorValue));
     }
 
 
-    public static ArrayList<String> readColumn(String dbname, String column){
+    public static ArrayList<String> readColumn(String table, String column){
         //Lese eine gesamte Spalte aus der Datenbank aus
         initStatement();
         ArrayList<String> data = new ArrayList<String>();
         try {
-            ResultSet myResultSet = myStatement.executeQuery("select * from "+dbname);
+            ResultSet myResultSet = myStatement.executeQuery("select * from "+table);
             while(myResultSet.next()){
                 data.add(myResultSet.getString(column));
             }
@@ -82,14 +82,14 @@ public class dbOperations {
         return data;
     }
 
-    public static String readValue(String dbname, String indicator, String indicatorValue, String column){
+    public static String readValue(String table, String indicator, String indicatorValue, String column){
         //Lese einen Wert aus einer bestimmten Spalte, wo in der selben Zeile ein Wert an einer bestimmten Spalte einen bestimmten Wert hat
         //(z.B. lese aus der Spalte Passwort, wo in der gleichen Zeile der Wert der Spalte Name "Steffen" ist)
         initStatement();
         String s = null;
         try {
             ResultSet myResultSet = myStatement.executeQuery("select "+column+"" +
-                    " from "+dbname+"" +
+                    " from "+table+"" +
                     " where "+indicator+"='"+indicatorValue+"'");
 
             ArrayList<String> data = new ArrayList<String>();
