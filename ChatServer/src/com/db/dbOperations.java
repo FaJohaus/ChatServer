@@ -110,6 +110,15 @@ public class dbOperations {
         return s;
     }
 
+    private static String createTableString(String tableName, String columnName, int varcharSize){
+        //Diese Methode kann nur einen table, mit einer Spalte erstellen, das ist aber für die Anwendung im ChatServer ausreichend
+        return "CREATE TABLE IF NOT EXISTS `"+tableName+"` (" +
+                "  `"+columnName+"` VARCHAR("+varcharSize+") NULL);";
+    }
+    public static void createTable(String tableName, String columnName, int varcharSize){
+        executeSqlQuery(createTableString(tableName, columnName, varcharSize));
+    }
+
     //Spezifische Methoden für users
     public static boolean userExists(String name2check){
         ArrayList<String> userNames = readColumn("users", "name");

@@ -186,14 +186,14 @@ public class ServerWorker extends Thread {
     public void sendTo(String receiver, String msg){
         for (ServerWorker worker2getMsg: server.workerList) {
             if(worker2getMsg.getLogin().equals(receiver)){
-                worker2getMsg.send(login+": " +msg);
+                worker2getMsg.send(msg);
             }
         }
     }
 
     public void sendToAll(String msg){
         for (ServerWorker worker: server.workerList) {
-            worker.send(login+": " +msg);
+            worker.send(msg);
         }
     }
 }

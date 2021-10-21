@@ -2,6 +2,7 @@ package com.handlers;
 
 import java.util.Arrays;
 
+import com.db.dbOperations;
 import com.muc.ServerWorker;
 import com.utils.chatutils.commandhandler.commandHandler;
 
@@ -27,11 +28,26 @@ public class generalCommands extends commandHandler {
             SW.handleLogin(SW.outputStream, args);
             return true;
         } else if ("send".equalsIgnoreCase(cmd)) {
-            SW.sendToAll("(An Alle) "+String.join(" ", args));
+            SW.sendToAll("(An Alle) " +SW.getLogin()+": "+String.join(" ", args));
             return true;
         } else if ("sendto".equalsIgnoreCase(cmd)){
+            String receiver = args[0];
+
             String[] a = Arrays.copyOfRange(args, 1, args.length);
-            SW.sendTo(args[0], "(Privat) "+String.join(" ", a));
+            String message = "(Privat) "+SW.getLogin()+": "+String.join(" ", a);
+
+            //Überprüfe, ob der Empfänger online ist, wenn nicht speichere die Nachricht in der db
+            if(dbOperations.readValue("users", "name", receiver, "lastonl").equals("online")){
+                SW.sendTo(receiver, message);
+            } else {
+                if(message.length() > 1000){
+                    SW.send(receiver+" ist grade nicht online und deine Nachricht ist zu lang zum speichern, bitte fasse dich etwas kürzer.");
+                }
+                dbOperations.createTable("messages"+receiver,"messages", 1000);
+                dbOperations.writeData("messages"+receiver, new String[]{"messages"}, new String[]{message});
+                SW.send(receiver+" ist grade nicht online, deine Nachricht wurde gespeichert und er/sie kann sie lesen, wenn er online ist.");
+            }
+
             return true;
         } else if ("whoami".equalsIgnoreCase(cmd)){
             SW.send(SW.getLogin());
