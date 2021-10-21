@@ -27,8 +27,8 @@ public class dbCommands extends commandHandler {
                 String argsUser = args[1];
                 String argsPwd = args[2];
 
-                if(argsUser.length() > 30 || argsPwd.length() > 30){
-                    SW.send("Nutzername und Passwort dürfen maximal 30 Zeichen lang sein");
+                if(argsUser.length() > 20 || argsPwd.length() > 20){
+                    SW.send("Nutzername und Passwort dürfen maximal 20 Zeichen lang sein");
                     return true;
                 }
 
@@ -96,8 +96,8 @@ public class dbCommands extends commandHandler {
                 String argsChange = args[1];
                 String argsNewValue = args[4];
 
-                if(argsNewValue.length() > 30){
-                    SW.send("Nutzername und Passwort dürfen maximal 30 Zeichen lang sein");
+                if(argsNewValue.length() > 20){
+                    SW.send("Nutzername und Passwort dürfen maximal 20 Zeichen lang sein");
                     return true;
                 }
 
@@ -151,8 +151,9 @@ public class dbCommands extends commandHandler {
                     usersWithLastonl.add(new String[]{user, dbOperations.readValue("users", "name", user, "lastonl")});
                 }
 
+                long now = System.currentTimeMillis();
                 for (String[] a: usersWithLastonl) {
-                    SW.send(Arrays.toString(a));
+                    SW.send(a[0] + mySpacing(20 - a[0].length()) + time2String(now, a[1]));
                 }
 
                 return true;
@@ -163,5 +164,39 @@ public class dbCommands extends commandHandler {
             }
         }
         return false;
+    }
+
+    private String time2String(long current, String lastonlStr){
+        if(lastonlStr.equals("online")){return "Online";}
+
+        String s = "Zuletzt Online vor ";
+        long lastonl = (current - Long.parseLong(lastonlStr)) / 1000;
+        if(lastonl < 60){return s+ lastonl+" Sekunde(n)";}
+
+        else {lastonl = lastonl / 60;}
+        if(lastonl < 60){return s+ lastonl+ " Minute(n)";}
+
+        else {lastonl = lastonl / 60;}
+        if(lastonl < 24){return s+ lastonl+ " Stunde(n)";}
+
+        else {lastonl = lastonl / 24;}
+        if(lastonl < 7){return s+ lastonl+ " Tag(en)";}
+
+        else {lastonl = lastonl / 7;}
+        if(lastonl < 4){return s+ lastonl+ " Woche(n)";}
+
+        else {lastonl = lastonl / 4;}
+        if(lastonl < 12){return s+ lastonl+ " Monat(en)";}
+
+        else {lastonl = lastonl / 12;}
+        return s+ lastonl+ " Jahr(en)";
+    }
+
+    private String mySpacing(int laenge){
+        String s = "  ";
+        for (int i = 0; i < laenge; i++) {
+            s += " ";
+        }
+        return s;
     }
 }
