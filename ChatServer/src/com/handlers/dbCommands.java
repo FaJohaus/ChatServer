@@ -51,7 +51,7 @@ public class dbCommands extends commandHandler {
             }
 
         } else if ("delete".equalsIgnoreCase(cmd)) {
-            //Überprüfe, was gelöscht werden soll (User, Gruppe?)
+            //Überprüfe, was gelöscht werden soll (User, Gruppe, Message?)
             if (args[0].equalsIgnoreCase("user")) {
                 if (args.length != 2) {
                     SW.send("Fehlerhafte Eingabe, tippe 'delete user <pwd>'");
@@ -76,12 +76,24 @@ public class dbCommands extends commandHandler {
                 dbOperations.deleteData("users", "name", user);
                 SW.send("Nutzer wurde erfolgreich gelöscht.");
 
+                //Lösche den table der ungelesenen Nachrichten des Nutzers
+                dbOperations.deleteTable("messages"+user);
+
                 //Logge den Nutzer aus
                 SW.handleLogout();
-
                 return true;
             } else if (args[0].equalsIgnoreCase("group")) {
                 // TODO UserGruppen löschen
+            } else if (args[0].equalsIgnoreCase("messages")){
+                String user = SW.getLogin();
+                if(!dbOperations.tableExists("messages"+user)){
+                    SW.send("Es gibt keine Nachrichten für dich, die gelöscht werden könnten.");
+                    return true;
+                }
+                dbOperations.deleteTable("messages"+user);
+                SW.send("Deine Nachrichten wurden gelöscht.");
+
+                return true;
             }
 
 
@@ -166,8 +178,39 @@ public class dbCommands extends commandHandler {
             } else if(args[0].equalsIgnoreCase("groups")){
                 // TODO list groups (alle gruppen des Nutzers in einer column speichern)
             } else if(args[0].equalsIgnoreCase("messages")){
-                // TODO list messages (alle Nachrichten, die in Abwesenheit des Nutzers an ihn gingen in einer column speichern)
+                String user = SW.getLogin();
+                //Überprüfe, ob es Nachrichten für den Benutzer gibt
+                if(!dbOperations.tableExists("messages"+user)){
+                    SW.send("Es wurden keine Nachrichten an dich geschickt, als du offline warst.");
+                    return true;
+                }
+                ArrayList<String> messages = dbOperations.readColumn("messages"+user, "messages");
+                for (String message: messages) {
+                    SW.send("Nachricht:          " + message);
+                }
+                SW.send("Du kannst diese Nachrichten mit 'delete messages' löschen, wenn du willst.");
+
+                return true;
             }
+        } else if ("sendto".equalsIgnoreCase(cmd)){
+            String receiver = args[0];
+
+            String[] a = Arrays.copyOfRange(args, 1, args.length);
+            String message = "(Privat) "+SW.getLogin()+": "+String.join(" ", a);
+
+            //Überprüfe, ob der Empfänger online ist, wenn nicht speichere die Nachricht in der db
+            if(dbOperations.readValue("users", "name", receiver, "lastonl").equals("online")){
+                SW.sendTo(receiver, message);
+            } else {
+                if(message.length() > 1000){
+                    SW.send(receiver+" ist grade nicht online und deine Nachricht ist zu lang zum speichern, bitte fasse dich etwas kürzer.");
+                }
+                dbOperations.createTable("messages"+receiver,"messages", 1000);
+                dbOperations.writeData("messages"+receiver, new String[]{"messages"}, new String[]{message});
+                SW.send(receiver+" ist grade nicht online, deine Nachricht wurde gespeichert und er/sie kann sie lesen, wenn er online ist.");
+            }
+
+            return true;
         }
         return false;
     }

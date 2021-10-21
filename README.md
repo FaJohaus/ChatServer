@@ -20,9 +20,11 @@
     - change group</ul>
 - Delete<ul>
     - delete user *password*<br>
-    - delete group</ul>
+    - delete group
+    - delete messages</ul>
 - List<ul>
-    - list users</ul>
+    - list users
+    - list messages</ul>
 - Send<ul>
     - send *message*</ul>
 - Sendto<ul>

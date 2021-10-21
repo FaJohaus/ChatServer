@@ -119,6 +119,26 @@ public class dbOperations {
         executeSqlQuery(createTableString(tableName, columnName, varcharSize));
     }
 
+    private static String deleteTableString(String tableName){
+        return "DROP TABLE " + tableName;
+    }
+    public static void deleteTable(String tableName){
+        executeSqlQuery(deleteTableString(tableName));
+    }
+
+    public static boolean tableExists(String tableName){
+        initStatement();
+        String s = null;
+        try {
+            ResultSet myResultSet = myStatement.executeQuery("SHOW TABLES LIKE " + "'"+tableName+"';");
+            return myResultSet.next();
+
+        } catch (SQLException throwables) {
+            System.err.println("Daten können nicht aus der Datenbank gelesen werden.");
+            return false;
+        }
+    }
+
     //Spezifische Methoden für users
     public static boolean userExists(String name2check){
         ArrayList<String> userNames = readColumn("users", "name");
