@@ -23,6 +23,8 @@ Funktionen:
     - create group </ul>
 - Login<ul>
     - login *username* *password*</ul>
+- WhoAmI<ul>
+	- whoami</ul>
 - Change<ul>
     - change user name *username* *password* *new_username*<br>
     - change user pwd *username* *password* *new_password*<br>

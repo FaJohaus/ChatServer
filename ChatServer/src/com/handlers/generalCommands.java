@@ -33,6 +33,9 @@ public class generalCommands extends commandHandler {
             String[] a = Arrays.copyOfRange(args, 1, args.length);
             SW.sendTo(args[0], "(Privat) "+String.join(" ", a));
             return true;
+        } else if ("whoami".equalsIgnoreCase(cmd)){
+            SW.send(SW.getLogin());
+            return true;
         }
 
         return false;
