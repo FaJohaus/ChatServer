@@ -24,12 +24,6 @@ public class Server extends Thread {
         return workerList;
     }
 
-    public void sendToAll(String msg) {
-        for (ServerWorker s : workerList) {
-            s.send(msg + "\n");
-        }
-    }
-
     @Override
     public void run() {
         try {

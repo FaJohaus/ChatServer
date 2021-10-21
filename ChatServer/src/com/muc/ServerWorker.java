@@ -82,7 +82,7 @@ public class ServerWorker extends Thread {
     public void handleLogoff() {
         List<ServerWorker> workerList = server.getWorkerList();
         // send other online users current user's status
-        String onlineMsg = "offline " + login + "\n";
+        String onlineMsg = login + " ist nun offline.";
         for (ServerWorker worker : workerList) {
             if (!login.equals(worker.getLogin())) {
                 worker.send(onlineMsg);
@@ -117,17 +117,8 @@ public class ServerWorker extends Thread {
 
                 List<ServerWorker> workerList = server.getWorkerList();
 
-                // send current user all other online logins
-                for (ServerWorker worker : workerList) {
-                    if (worker.getLogin() != null) {
-                        if (!login.equals(worker.getLogin())) {
-                            String msg2 = "online " + worker.getLogin() + "\n";
-                            send(msg2);
-                        }
-                    }
-                }
                 // send other online users current user's status
-                String onlineMsg = "online " + login + "\n";
+                String onlineMsg = login + " ist nun online.";
                 for (ServerWorker worker : workerList) {
                     if (!login.equals(worker.getLogin())) {
                         worker.send(onlineMsg);
@@ -158,6 +149,14 @@ public class ServerWorker extends Thread {
                 if(worker2getMsg.getLogin().equals(receiver)){
                     worker2getMsg.send(login+": " +msg);
                 }
+            }
+        }
+    }
+
+    public void sendToAll(String msg){
+        if(login != null){
+            for (ServerWorker worker: server.workerList) {
+                worker.send(login+": " +msg);
             }
         }
     }

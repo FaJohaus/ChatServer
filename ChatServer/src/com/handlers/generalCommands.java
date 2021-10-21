@@ -23,7 +23,7 @@ public class generalCommands extends commandHandler {
             SW.handleLogin(SW.outputStream, args);
             return true;
         } else if ("send".equalsIgnoreCase(cmd)) {
-            SW.server.sendToAll(String.join(" " + args));
+            SW.sendToAll("(An Alle) "+String.join(" ", args));
             return true;
         } else if ("sendto".equalsIgnoreCase(cmd)){
             String[] a = Arrays.copyOfRange(args, 1, args.length);

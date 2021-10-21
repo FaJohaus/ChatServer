@@ -17,7 +17,7 @@ public class dbCommands extends commandHandler {
     public boolean handler(String cmd, String[] args) {
         if ("create".equalsIgnoreCase(cmd)) {
             //Überprüfe, was erstellt werden soll (User, Gruppe?)
-            if (args[0].equals("user")) {
+            if (args[0].equalsIgnoreCase("user")) {
                 if (args.length != 3) {
                     SW.send("Fehlerhafte Eingabe, tippe 'create user <name> <pwd>'");
                     return true;
@@ -45,13 +45,13 @@ public class dbCommands extends commandHandler {
                 SW.handleLogin(SW.outputStream, new String[]{argsUser, argsPwd});
 
                 return true;
-            } else if (args[0].equals("group")) {
+            } else if (args[0].equalsIgnoreCase("group")) {
                 // TODO UserGruppen erstellen
             }
 
         } else if ("delete".equalsIgnoreCase(cmd)) {
             //Überprüfe, was gelöscht werden soll (User, Gruppe?)
-            if (args[0].equals("user")) {
+            if (args[0].equalsIgnoreCase("user")) {
                 if (args.length != 3) {
                     SW.send("Fehlerhafte Eingabe, tippe 'delete user <name> <pwd>'");
                     return true;
@@ -77,14 +77,14 @@ public class dbCommands extends commandHandler {
                 SW.send("Nutzer wurde erfolgreich gelöscht.");
                 return true;
 
-            } else if (args[0].equals("group")) {
+            } else if (args[0].equalsIgnoreCase("group")) {
                 // TODO UserGruppen löschen
             }
 
 
         } else if ("change".equalsIgnoreCase(cmd)) {
             //Überprüfe, was verändert werden soll (User, Gruppe?)
-            if (args[0].equals("user")) {
+            if (args[0].equalsIgnoreCase("user")) {
                 if (args.length != 5) {
                     SW.send("Fehlerhafte Eingabe, tippe 'change user name/pwd <name> <pwd> <new name/pwd>'");
                     return true;
@@ -112,7 +112,7 @@ public class dbCommands extends commandHandler {
                 }
 
                 //Überprüfe, was am user verändert werden soll (name, pwd?)
-                if(argsChange.equals("name")){
+                if(argsChange.equalsIgnoreCase("name")){
                     //Überprüfe, ob der neue Nutzername verfügbar ist
                     if(dbOperations.userExists(argsNewValue)){
                         SW.send("Nutzername "+argsNewValue+" vergeben, versuche einen anderen");
@@ -126,20 +126,29 @@ public class dbCommands extends commandHandler {
                     SW.handleLogin(SW.outputStream, new String[]{argsNewValue, argsPwd});
                     return true;
 
-                } else if(argsChange.equals("pwd")){
+                } else if(argsChange.equalsIgnoreCase("pwd")){
                     dbOperations.updateData("users", "name", argsUser, "pwd", argsNewValue);
                     SW.send("Passwort von "+argsUser+" wurde erfolgreich geändert.");
                     return true;
                 }
 
                 return true;
-            } else if (args[0].equals("group")) {
+            } else if (args[0].equalsIgnoreCase("group")) {
                 // TODO UserGruppen verändern
                 // TODO Wichtig: Gruppenliste mit Namen muss geändert werden, wenn ein Nutzer der Liste seinen Account löscht (er muss auch aus der Gruppenliste gelöscht werden),
                 // TODO da sonst jemand einen account mit seinem namen erstellen kann und in den gruppen ist und das is no good no no :o
 
             }
 
+        } else if("list".equalsIgnoreCase(cmd)){
+            //Überprüfe, was aufgelistet werden soll
+            if(args[0].equalsIgnoreCase("users")){
+
+            } else if(args[0].equalsIgnoreCase("groups")){
+                // TODO list groups (alle gruppen des Nutzers in einer column speichern)
+            } else if(args[0].equalsIgnoreCase("messages")){
+                // TODO list messages (alle Nachrichten, die in Abwesenheit des Nutzers an ihn gingen in einer column speichern)
+            }
         }
         return false;
     }
