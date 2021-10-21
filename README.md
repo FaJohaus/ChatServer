@@ -23,6 +23,12 @@ Funktionen:
     - create group </ul>
 - Login<ul>
     - login *username* *password*</ul>
+- Logout/Logoff<ul>
+    - logout
+    - logoff</ul>
+- Quit/Leave<ul>
+	- quit<br>
+	- leave</ul>
 - WhoAmI<ul>
 	- whoami</ul>
 - Change<ul>

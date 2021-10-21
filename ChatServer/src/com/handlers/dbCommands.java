@@ -75,8 +75,11 @@ public class dbCommands extends commandHandler {
                 //Lösche den Nutzer
                 dbOperations.deleteData("users", "name", user);
                 SW.send("Nutzer wurde erfolgreich gelöscht.");
-                return true;
 
+                //Logge den Nutzer aus
+                SW.handleLogout();
+
+                return true;
             } else if (args[0].equalsIgnoreCase("group")) {
                 // TODO UserGruppen löschen
             }

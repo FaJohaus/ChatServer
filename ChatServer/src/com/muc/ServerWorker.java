@@ -79,7 +79,7 @@ public class ServerWorker extends Thread {
         clientSocket.close();
     }
 
-    public void handleLogoff() {
+    public void handleQuit() {
         List<ServerWorker> workerList = server.getWorkerList();
         // send other online users current user's status
         String onlineMsg = login + " ist nun offline.";
@@ -96,6 +96,22 @@ public class ServerWorker extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void handleLogout(){
+        List<ServerWorker> workerList = server.getWorkerList();
+        // send other online users current user's status
+        String onlineMsg = login + " ist nun offline.";
+        for (ServerWorker worker : workerList) {
+            if (!login.equals(worker.getLogin())) {
+                worker.send(onlineMsg);
+            }
+        }
+        //Setze den lastonl in der db auf die akutelle Zeit
+        dbOperations.updateData("users","name", getLogin(),"lastonl",String.valueOf(System.currentTimeMillis()));
+
+        send("Du bist nun von " + getLogin() + " abgemeldet. Melde dich wieder mit einem Account an, um den ChatServer benutzen zu können.");
+        login = null;
     }
 
     public String getLogin() {

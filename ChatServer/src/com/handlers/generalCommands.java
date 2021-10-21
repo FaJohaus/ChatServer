@@ -1,7 +1,5 @@
 package com.handlers;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import com.muc.ServerWorker;
@@ -21,8 +19,10 @@ public class generalCommands extends commandHandler {
             return true;
         }
 
-        if ("quit".equalsIgnoreCase(cmd) || "logoff".equalsIgnoreCase(cmd)) {
-            SW.handleLogoff();
+        if ("quit".equalsIgnoreCase(cmd) || "leave".equalsIgnoreCase(cmd)) {
+            SW.handleQuit();
+        } else if ("logout".equalsIgnoreCase(cmd) || "logoff".equalsIgnoreCase(cmd)){
+            SW.handleLogout();
         } else if ("login".equalsIgnoreCase(cmd)) {
             SW.handleLogin(SW.outputStream, args);
             return true;
