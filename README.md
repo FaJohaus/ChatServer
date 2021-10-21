@@ -36,4 +36,5 @@ Funktionen:
     - send *message*</ul>
 - Sendto<ul>
     - sendto *username* *message*<br>
-    - sendto group *groupname* *message*
+	- sendto group *groupname* *message*</ul>
+	
