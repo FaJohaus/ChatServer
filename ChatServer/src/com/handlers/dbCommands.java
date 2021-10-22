@@ -84,13 +84,7 @@ public class dbCommands extends commandHandler {
 
                     //Füge den Nutzer im table der Gruppe hinzu
                     dbOperations.writeData("group"+argsGroupName, new String[]{"members"}, new String[]{member});
-
-                    System.out.println(dbOperations.writeDataString("groupsof"+member, new String[]{"chatGroups"}, new String[]{argsGroupName}));
-                    System.out.println(dbOperations.writeDataString("group"+argsGroupName, new String[]{"members"}, new String[]{member}));
                 }
-
-                System.out.println(Arrays.toString(args));
-                System.out.println(argsGroupName +"\n"+ members);
 
                 return true;
             }
@@ -137,7 +131,32 @@ public class dbCommands extends commandHandler {
                 SW.handleLogout();
                 return true;
             } else if (args[0].equalsIgnoreCase("group")) {
-                // TODO UserGruppen löschen
+                String argsGroupname = args[1];
+                if(!dbOperations.tableExists("group"+argsGroupname)){
+                    SW.send("Ein Gruppe mit dem Namen "+argsGroupname+" existiert nicht.");
+                    return true;
+                }
+
+                String user = SW.getLogin();
+                //Überprüfe, ob der Nutzer Mitglied dieser Gruppe ist
+                boolean userInGroup = false;
+                for (String member: dbOperations.readColumn("group"+argsGroupname, "members")) {
+                    if(member.equals(user)){
+                        userInGroup = true;
+                    }
+                }
+                if(!userInGroup){
+                    SW.send("Du bist kein Mitglied dieser Gruppe und kannst sie deshalb nicht löschen.");
+                    return true;
+                }
+
+                for (String member: dbOperations.readColumn("group"+argsGroupname, "members")) {
+                    dbOperations.deleteData("groupsof"+member, "chatGroups", argsGroupname);
+                }
+                dbOperations.deleteTable("group"+argsGroupname);
+                SW.send("Gruppe "+argsGroupname+" wurde gelöscht.");
+
+                return true;
             } else if (args[0].equalsIgnoreCase("messages")){
                 String user = SW.getLogin();
                 if(!dbOperations.tableExists("messages"+user)){

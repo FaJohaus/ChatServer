@@ -20,7 +20,7 @@
     - change group</ul>
 - Delete<ul>
     - delete user *password*<br>
-    - delete group
+    - delete group *groupname*
     - delete messages</ul>
 - List<ul>
     - list users

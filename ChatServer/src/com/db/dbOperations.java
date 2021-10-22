@@ -25,7 +25,7 @@ public class dbOperations {
         }
     }
 
-    public static String writeDataString(String table, String[] columns, String[] values){
+    private static String writeDataString(String table, String[] columns, String[] values){
         //Klebe alle Zeilen, in die geschrieben werden soll, mit ihren entsprechenden Werten zu einem query String zusammen
         String s = "insert into "+table
                 +   " (";
