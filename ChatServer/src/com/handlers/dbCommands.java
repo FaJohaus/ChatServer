@@ -317,6 +317,12 @@ public class dbCommands extends commandHandler {
                             for (String member: argsMembers) {
                                 SW.sendToWithDBsafe(member, "!! Du wurdest von "+user+" zu "+argsGroupname+" hinzugefügt !!");
                             }
+
+                            for (String member: membersInDB) {
+                                if(!member.equals(user)){
+                                    SW.sendToWithDBsafe(member, "!! "+user+" hat "+argsMembers+" zu "+argsGroupname+" hinzugefügt. !!");
+                                }
+                            }
                         }
 
                         return true;
@@ -340,6 +346,12 @@ public class dbCommands extends commandHandler {
                             SW.send("Die Nutzer " + argsMembers + " wurden aus " + argsGroupname + " entfernt.");
                             for (String member: argsMembers) {
                                 SW.sendToWithDBsafe(member, "!! Du wurdest von "+user+" aus "+argsGroupname+" entfernt. !!");
+                            }
+
+                            for (String member: membersInDB) {
+                                if(!member.equals(user)){
+                                    SW.sendToWithDBsafe(member, "!! "+user+" hat "+argsMembers+" aus "+argsGroupname+" entfernt. !!");
+                                }
                             }
                         }
 
