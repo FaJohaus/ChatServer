@@ -27,6 +27,11 @@ public class dbCommands extends commandHandler {
                 String argsUser = args[1];
                 String argsPwd = args[2];
 
+                if(argsUser.equals("group")){
+                    SW.send("Du darfst dich nicht 'group' nennen, sonst fliegt hier alles in die Luft!!!");
+                    return true;
+                }
+
                 if(argsUser.length() > 20 || argsPwd.length() > 20){
                     SW.send("Nutzername und Passwort dürfen maximal 20 Zeichen lang sein");
                     return true;

@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import com.muc.ServerWorker;
 import com.utils.chatutils.commandhandler.commandHandler;
+import com.db.dbOperations;
 
 public class generalCommands extends commandHandler {
 
@@ -19,7 +20,6 @@ public class generalCommands extends commandHandler {
             return true;
         }
 
-        //(sendto und login Befehl wurde nach dbCommands verschoben, da er nun dbOperationen verwendet.)
         if ("quit".equalsIgnoreCase(cmd) || "leave".equalsIgnoreCase(cmd)) {
             SW.handleQuit();
         } else if ("logout".equalsIgnoreCase(cmd) || "logoff".equalsIgnoreCase(cmd)){
@@ -28,9 +28,28 @@ public class generalCommands extends commandHandler {
             SW.sendToAll("(An Alle) " +SW.getLogin()+": "+String.join(" ", args));
             return true;
         } else if ("sendto".equalsIgnoreCase(cmd)){
-            String[] a = Arrays.copyOfRange(args, 1, args.length);
-            String message = "(Privat) "+SW.getLogin()+": "+String.join(" ", a);
-            SW.sendToWithDBsafe(args[0], message);
+            if(!args[0].equals("group")){
+                String[] a = Arrays.copyOfRange(args, 1, args.length);
+                String message = "(Privat) "+SW.getLogin()+": "+String.join(" ", a);
+                SW.sendToWithDBsafe(args[0], message);
+
+                return true;
+            }
+
+            String argsGroupname = args[1];
+            if(!dbOperations.tableExists("group"+argsGroupname) && !dbOperations.isMemberOfGroup(argsGroupname, SW.getLogin())){
+                SW.send("Die Gruppe "+argsGroupname+" existiert nicht oder du bist kein Mitglied.");
+                return  true;
+            }
+
+            String[] a = Arrays.copyOfRange(args, 2, args.length);
+            String message = "(in "+argsGroupname+") "+SW.getLogin()+": "+String.join(" ", a);
+
+            for (String member: dbOperations.readColumn("group"+argsGroupname, "members")) {
+                if(!member.equals(SW.getLogin())){
+                    SW.sendToWithDBsafe(member, message);
+                }
+            }
 
             return true;
         } else if ("whoami".equalsIgnoreCase(cmd)){
