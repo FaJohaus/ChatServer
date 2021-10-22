@@ -386,7 +386,24 @@ public class dbCommands extends commandHandler {
 
                 return true;
             } else if(args[0].equalsIgnoreCase("groups")){
-                // TODO list groups (alle gruppen des Nutzers in einer column speichern)
+                String user = SW.getLogin();
+
+                if(dbOperations.tableExists("groupsof"+user)){
+                    ArrayList<String> groups = dbOperations.readColumn("groupsof"+user, "chatGroups");
+
+                    if(groups.size() == 0){
+                        SW.send("Du bist aktuell kein Mitglied einer Gruppe.");
+                        return true;
+                    }
+
+                    for (String group: groups) {
+                        SW.send(group);
+                    }
+                    return true;
+                }
+                SW.send("Du bist aktuell kein Mitglied einer Gruppe.");
+
+                return true;
             } else if(args[0].equalsIgnoreCase("messages")){
                 String user = SW.getLogin();
                 //Überprüfe, ob es Nachrichten für den Benutzer gibt
@@ -401,6 +418,8 @@ public class dbCommands extends commandHandler {
                 SW.send("Du kannst diese Nachrichten mit 'delete messages' löschen, wenn du willst.");
 
                 return true;
+            } else if(args[0].equalsIgnoreCase("members")){
+
             }
         }
         return false;

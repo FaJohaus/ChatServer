@@ -26,8 +26,10 @@
     - delete messages</ul>
 - List<ul>
     - list users
-    - list messages</ul>
-- Send<ul>
+    - list messages
+    - list groups
+    - list members *group*</ul>
+- Send (Send to all)<ul>
     - send *message*</ul>
 - Sendto<ul>
     - sendto *username* *message*<br>
