@@ -77,6 +77,15 @@ public class dbCommands extends commandHandler {
                 dbOperations.addUsersToGroup(argsGroupName, members);
                 SW.send("Gruppe "+argsGroupName+" wurde erstellt.");
 
+                //Teile den anderen Nutzern mit, dass sie zu einer Gruppe hinzugefügt wurden
+                if(members.size() > 1){
+                    for (String member: members) {
+                        if(!member.equals(user)){
+                            SW.sendTo(member, "!! Du wurdest von "+user+" zu "+argsGroupName+"  hinzugefügt !!");
+                        }
+                    }
+                }
+
                 return true;
             }
 
@@ -144,11 +153,22 @@ public class dbCommands extends commandHandler {
                     return true;
                 }
 
+                ArrayList<String> members = dbOperations.readColumn("group"+argsGroupname, "members");
+
                 for (String member: dbOperations.readColumn("group"+argsGroupname, "members")) {
                     dbOperations.deleteData("groupsof"+member, "chatGroups", argsGroupname);
                 }
                 dbOperations.deleteTable("group"+argsGroupname);
                 SW.send("Gruppe "+argsGroupname+" wurde gelöscht.");
+
+                //Teile den anderen Nutzern mit, dass die Gruppe gelöscht wurde
+                if(members.size() > 1){
+                    for (String member: members) {
+                        if(!member.equals(user)){
+                            SW.sendTo(member, "!! Die Gruppe "+argsGroupname+" wurde von "+user+" gelöscht. !!");
+                        }
+                    }
+                }
 
                 return true;
             } else if (args[0].equalsIgnoreCase("messages")){
@@ -233,9 +253,6 @@ public class dbCommands extends commandHandler {
 
                 return true;
             } else if (args[0].equalsIgnoreCase("group")) {
-                // TODO UserGruppen verändern
-                // TODO neuen gruppennamen auch in groupsofuser
-
                 String user = SW.getLogin();
                 String argsGroupname = args[2];
 
@@ -256,6 +273,17 @@ public class dbCommands extends commandHandler {
                     }
                     dbOperations.changeTableName("group"+argsGroupname, "group"+argsNewGroupname);
                     SW.send("Gruppenname wurde von " + argsGroupname + " zu " + argsNewGroupname + " geändert.");
+
+                    //Teile den anderen Nutzern mit, dass die Gruppe geändert wurde
+                    ArrayList<String> members = dbOperations.readColumn("group"+argsNewGroupname
+                            , "members");
+                    if(members.size() > 1){
+                        for (String member: members) {
+                            if(!member.equals(user)){
+                                SW.sendTo(member, "!! Die Gruppe "+argsGroupname+" wurde von "+user+" zu "+argsNewGroupname+" umbenannt. !!");
+                            }
+                        }
+                    }
 
                     return true;
                 } else if(args[1].equalsIgnoreCase("members")){
@@ -287,6 +315,9 @@ public class dbCommands extends commandHandler {
                         if(members.size() != 0){
                             dbOperations.addUsersToGroup(argsGroupname, members);
                             SW.send("Die Nutzer " + members + " wurden zu " + argsGroupname + " hinzugefügt.");
+                            for (String member: members) {
+                                SW.sendTo(member, "!! Du wurdest von "+user+" zu "+argsGroupname+" hinzugefügt !!");
+                            }
                         }
 
                         return true;
