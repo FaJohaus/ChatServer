@@ -191,6 +191,27 @@ public class ServerWorker extends Thread {
         }
     }
 
+    public void sendToWithDBsafe(String receiver, String message){
+
+        //Überprüfe, ob der Empfänger existiert
+        if(!dbOperations.userExists(receiver)){
+            send("Der Nutzer " + receiver + " existiert nicht.");
+            return;
+        }
+
+        //Überprüfe, ob der Empfänger online ist, wenn nicht speichere die Nachricht in der db
+        if(dbOperations.readValue("users", "name", receiver, "lastonl").equals("online")){
+            sendTo(receiver, message);
+        } else {
+            if(message.length() > 1000){
+                send(receiver+" ist grade nicht online und deine Nachricht ist zu lang zum speichern, bitte fasse dich etwas kürzer.");
+            }
+            dbOperations.createTable("messages"+receiver,"messages", 1000);
+            dbOperations.writeData("messages"+receiver, new String[]{"messages"}, new String[]{message});
+            send(receiver+" ist grade nicht online, deine Nachricht wurde gespeichert und er/sie kann sie lesen, wenn er/sie online ist.");
+        }
+    }
+
     public void sendToAll(String msg){
         for (ServerWorker worker: server.workerList) {
             worker.send(msg);

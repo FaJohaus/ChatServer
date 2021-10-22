@@ -81,7 +81,7 @@ public class dbCommands extends commandHandler {
                 if(members.size() > 1){
                     for (String member: members) {
                         if(!member.equals(user)){
-                            SW.sendTo(member, "!! Du wurdest von "+user+" zu "+argsGroupName+"  hinzugefügt !!");
+                            SW.sendToWithDBsafe(member, "!! Du wurdest von "+user+" zu "+argsGroupName+"  hinzugefügt !!");
                         }
                     }
                 }
@@ -165,7 +165,7 @@ public class dbCommands extends commandHandler {
                 if(members.size() > 1){
                     for (String member: members) {
                         if(!member.equals(user)){
-                            SW.sendTo(member, "!! Die Gruppe "+argsGroupname+" wurde von "+user+" gelöscht. !!");
+                            SW.sendToWithDBsafe(member, "!! Die Gruppe "+argsGroupname+" wurde von "+user+" gelöscht. !!");
                         }
                     }
                 }
@@ -280,7 +280,7 @@ public class dbCommands extends commandHandler {
                     if(members.size() > 1){
                         for (String member: members) {
                             if(!member.equals(user)){
-                                SW.sendTo(member, "!! Die Gruppe "+argsGroupname+" wurde von "+user+" zu "+argsNewGroupname+" umbenannt. !!");
+                                SW.sendToWithDBsafe(member, "!! Die Gruppe "+argsGroupname+" wurde von "+user+" zu "+argsNewGroupname+" umbenannt. !!");
                             }
                         }
                     }
@@ -315,7 +315,7 @@ public class dbCommands extends commandHandler {
                             dbOperations.addUsersToGroup(argsGroupname, argsMembers);
                             SW.send("Die Nutzer " + argsMembers + " wurden zu " + argsGroupname + " hinzugefügt.");
                             for (String member: argsMembers) {
-                                SW.sendTo(member, "!! Du wurdest von "+user+" zu "+argsGroupname+" hinzugefügt !!");
+                                SW.sendToWithDBsafe(member, "!! Du wurdest von "+user+" zu "+argsGroupname+" hinzugefügt !!");
                             }
                         }
 
@@ -339,7 +339,7 @@ public class dbCommands extends commandHandler {
 
                             SW.send("Die Nutzer " + argsMembers + " wurden aus " + argsGroupname + " entfernt.");
                             for (String member: argsMembers) {
-                                SW.sendTo(member, "!! Du wurdest von "+user+" aus "+argsGroupname+" entfernt. !!");
+                                SW.sendToWithDBsafe(member, "!! Du wurdest von "+user+" aus "+argsGroupname+" entfernt. !!");
                             }
                         }
 
@@ -385,31 +385,6 @@ public class dbCommands extends commandHandler {
 
                 return true;
             }
-        } else if ("sendto".equalsIgnoreCase(cmd)){
-            String receiver = args[0];
-
-            //Überprüfe, ob der Empfänger existiert
-            if(!dbOperations.userExists(receiver)){
-                SW.send("Der Nutzer " + receiver + " existiert nicht.");
-                return true;
-            }
-
-            String[] a = Arrays.copyOfRange(args, 1, args.length);
-            String message = "(Privat) "+SW.getLogin()+": "+String.join(" ", a);
-
-            //Überprüfe, ob der Empfänger online ist, wenn nicht speichere die Nachricht in der db
-            if(dbOperations.readValue("users", "name", receiver, "lastonl").equals("online")){
-                SW.sendTo(receiver, message);
-            } else {
-                if(message.length() > 1000){
-                    SW.send(receiver+" ist grade nicht online und deine Nachricht ist zu lang zum speichern, bitte fasse dich etwas kürzer.");
-                }
-                dbOperations.createTable("messages"+receiver,"messages", 1000);
-                dbOperations.writeData("messages"+receiver, new String[]{"messages"}, new String[]{message});
-                SW.send(receiver+" ist grade nicht online, deine Nachricht wurde gespeichert und er/sie kann sie lesen, wenn er/sie online ist.");
-            }
-
-            return true;
         }
         return false;
     }

@@ -27,6 +27,12 @@ public class generalCommands extends commandHandler {
         } else if ("send".equalsIgnoreCase(cmd)) {
             SW.sendToAll("(An Alle) " +SW.getLogin()+": "+String.join(" ", args));
             return true;
+        } else if ("sendto".equalsIgnoreCase(cmd)){
+            String[] a = Arrays.copyOfRange(args, 1, args.length);
+            String message = "(Privat) "+SW.getLogin()+": "+String.join(" ", a);
+            SW.sendToWithDBsafe(args[0], message);
+
+            return true;
         } else if ("whoami".equalsIgnoreCase(cmd)){
             SW.send("Du bist angemeldet als "+ SW.getLogin()+".");
             return true;
