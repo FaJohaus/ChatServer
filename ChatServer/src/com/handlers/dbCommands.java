@@ -287,41 +287,61 @@ public class dbCommands extends commandHandler {
 
                     return true;
                 } else if(args[1].equalsIgnoreCase("members")){
-                    if(args[3].equalsIgnoreCase("add")){
-                        ArrayList<String> members = new ArrayList<>();
-                        members.addAll(Arrays.asList(Arrays.copyOfRange(args, 4, args.length)));
+                    ArrayList<String> argsMembers = new ArrayList<>();
+                    argsMembers.addAll(Arrays.asList(Arrays.copyOfRange(args, 4, args.length)));
 
+                    if(args[3].equalsIgnoreCase("add")){
                         //Überprüfe, ob alle Mitglieder existieren
-                        for (int i = 0; i < members.size(); i++) {
-                            if(!dbOperations.userExists(members.get(i))){
-                                System.out.println(members.get(i));
-                                members.remove(members.get(i));
-                                SW.send("Der Nutzer " + members.get(i) + " existiert nicht und kann nicht zur Gruppe hinzugefügt werden.");
+                        for (int i = 0; i < argsMembers.size(); i++) {
+                            if(!dbOperations.userExists(argsMembers.get(i))){
+                                System.out.println(argsMembers.get(i));
+                                argsMembers.remove(argsMembers.get(i));
+                                SW.send("Der Nutzer " + argsMembers.get(i) + " existiert nicht und kann nicht zur Gruppe hinzugefügt werden.");
                             }
                         }
-
 
                         //Überprüfe, ob user schon Mitglied der Gruppe sind
                         ArrayList<String> membersInDB = dbOperations.readColumn("group"+argsGroupname, "members");
                         for (int i = 0; i < membersInDB.size(); i++) {
-                            for (int j = 0; j < members.size(); j++) {
-                                if(membersInDB.get(i).equals(members.get(j))){
-                                    members.remove(membersInDB.get(i));
+                            for (int j = 0; j < argsMembers.size(); j++) {
+                                if(membersInDB.get(i).equals(argsMembers.get(j))){
+                                    argsMembers.remove(membersInDB.get(i));
                                     SW.send("Der Nutzer "+membersInDB.get(i)+" ist bereits in der Gruppe.");
                                 }
                             }
                         }
 
-                        if(members.size() != 0){
-                            dbOperations.addUsersToGroup(argsGroupname, members);
-                            SW.send("Die Nutzer " + members + " wurden zu " + argsGroupname + " hinzugefügt.");
-                            for (String member: members) {
+                        if(argsMembers.size() != 0){
+                            dbOperations.addUsersToGroup(argsGroupname, argsMembers);
+                            SW.send("Die Nutzer " + argsMembers + " wurden zu " + argsGroupname + " hinzugefügt.");
+                            for (String member: argsMembers) {
                                 SW.sendTo(member, "!! Du wurdest von "+user+" zu "+argsGroupname+" hinzugefügt !!");
                             }
                         }
 
                         return true;
                     } else if(args[3].equalsIgnoreCase("remove")){
+                        //Überprüfe, ob die user überhaupt in der Gruppe sind
+                        ArrayList<String> membersInDB = dbOperations.readColumn("group"+argsGroupname, "members");
+                        for (String argsMember: argsMembers) {
+                            if(!dbOperations.isMemberOfGroup(argsGroupname, argsMember)){
+                                argsMembers.remove(argsMember);
+                                SW.send(argsMember + " ist kein Mitglied von " + argsGroupname + ".");
+                            }
+                        }
+
+                        if(argsMembers.size() != 0){
+                            for (String member2Delete: argsMembers) {
+                                dbOperations.deleteData("groupsof"+member2Delete, "chatGroups", argsGroupname);
+                                dbOperations.deleteData("group"+argsGroupname, "members", member2Delete);
+                            }
+
+
+                            SW.send("Die Nutzer " + argsMembers + " wurden aus " + argsGroupname + " entfernt.");
+                            for (String member: argsMembers) {
+                                SW.sendTo(member, "!! Du wurdest von "+user+" aus "+argsGroupname+" entfernt. !!");
+                            }
+                        }
 
                         return true;
                     }
