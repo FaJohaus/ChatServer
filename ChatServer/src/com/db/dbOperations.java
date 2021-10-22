@@ -163,4 +163,15 @@ public class dbOperations {
         if(pwd.equals(pwd2check)){return true;}
         else{return false;}
     }
+
+    //Spezifische Methoden für groups
+    public static boolean isMemberOfGroup(String group, String user){
+        boolean userInGroup = false;
+        for (String member: dbOperations.readColumn("group"+group, "members")) {
+            if(member.equals(user)){
+                userInGroup = true;
+            }
+        }
+        return userInGroup;
+    }
 }

@@ -17,7 +17,9 @@
 - Change<ul>
     - change user name *password* *new_username*<br>
     - change user pwd *password* *new_password*<br>
-    - change group</ul>
+    - change group name *old_groupname* *new_groupname*
+    - change group members *group* add *user_to_add1* *user_to_add2* *user_to_add3* ...
+    - change group members *group* remove *user_to_remove1* *user_to_remove2* *user_to_remove3* ...</ul>
 - Delete<ul>
     - delete user *password*<br>
     - delete group *groupname*

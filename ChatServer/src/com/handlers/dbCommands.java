@@ -147,14 +147,8 @@ public class dbCommands extends commandHandler {
                 }
 
                 String user = SW.getLogin();
-                //Überprüfe, ob der Nutzer Mitglied dieser Gruppe ist
-                boolean userInGroup = false;
-                for (String member: dbOperations.readColumn("group"+argsGroupname, "members")) {
-                    if(member.equals(user)){
-                        userInGroup = true;
-                    }
-                }
-                if(!userInGroup){
+
+                if(!dbOperations.isMemberOfGroup(argsGroupname, user)){
                     SW.send("Du bist kein Mitglied dieser Gruppe und kannst sie deshalb nicht löschen.");
                     return true;
                 }
@@ -249,8 +243,39 @@ public class dbCommands extends commandHandler {
                 return true;
             } else if (args[0].equalsIgnoreCase("group")) {
                 // TODO UserGruppen verändern
-                // TODO Wichtig: Gruppenliste mit Namen muss geändert werden, wenn ein Nutzer der Liste seinen Account löscht (er muss auch aus der Gruppenliste gelöscht werden),
-                // TODO da sonst jemand einen account mit seinem namen erstellen kann und in den gruppen ist und das is no good no no :o
+                // TODO neuen gruppennamen auch in groupsofuser
+
+                String user = SW.getLogin();
+                String argsGroupname = args[2];
+
+                if(!dbOperations.tableExists("group"+argsGroupname)){
+                    SW.send("Ein Gruppe mit dem Namen "+argsGroupname+" existiert nicht.");
+                    return true;
+                }
+
+                if(!dbOperations.isMemberOfGroup(argsGroupname, user)){
+                    SW.send("Du bist kein Mitglied dieser Gruppe und kannst sie deshalb nicht verändern.");
+                    return true;
+                }
+
+                if(args[1].equalsIgnoreCase("name")){
+                    String argsNewGroupname = args[3];
+                    for (String member: dbOperations.readColumn("group"+argsGroupname, "members")) {
+                        dbOperations.updateData("groupsof"+member, "chatGroups", argsGroupname, "chatGroups", argsNewGroupname);
+                    }
+                    dbOperations.changeTableName("group"+argsGroupname, "group"+argsNewGroupname);
+                    SW.send("Gruppenname wurde von " + argsGroupname + " zu " + argsNewGroupname + " geändert.");
+
+                    return true;
+                } else if(args[1].equalsIgnoreCase("members")){
+                    if(args[3].equalsIgnoreCase("add")){
+
+                        return true;
+                    } else if(args[3].equalsIgnoreCase("remove")){
+
+                        return true;
+                    }
+                }
 
             }
 
