@@ -74,17 +74,8 @@ public class dbCommands extends commandHandler {
 
                 //Erstelle die Gruppe
                 dbOperations.createTable("group"+argsGroupName, "members", 21);
-                for (String member: members) {
-                    //Erstelle table für alle Gruppen des Nutzers, wenn er noch keinen hat
-                    if(!dbOperations.tableExists("groupsof"+member)){
-                        dbOperations.createTable("groupsof"+member, "chatGroups", 31);
-                    }
-                    //Füge diese Gruppe hinzu
-                    dbOperations.writeData("groupsof"+member, new String[]{"chatGroups"}, new String[]{argsGroupName});
-
-                    //Füge den Nutzer im table der Gruppe hinzu
-                    dbOperations.writeData("group"+argsGroupName, new String[]{"members"}, new String[]{member});
-                }
+                dbOperations.addUsersToGroup(argsGroupName, members);
+                SW.send("Gruppe "+argsGroupName+" wurde erstellt.");
 
                 return true;
             }
@@ -269,6 +260,34 @@ public class dbCommands extends commandHandler {
                     return true;
                 } else if(args[1].equalsIgnoreCase("members")){
                     if(args[3].equalsIgnoreCase("add")){
+                        ArrayList<String> members = new ArrayList<>();
+                        members.addAll(Arrays.asList(Arrays.copyOfRange(args, 4, args.length)));
+
+                        //Überprüfe, ob alle Mitglieder existieren
+                        for (int i = 0; i < members.size(); i++) {
+                            if(!dbOperations.userExists(members.get(i))){
+                                System.out.println(members.get(i));
+                                members.remove(members.get(i));
+                                SW.send("Der Nutzer " + members.get(i) + " existiert nicht und kann nicht zur Gruppe hinzugefügt werden.");
+                            }
+                        }
+
+
+                        //Überprüfe, ob user schon Mitglied der Gruppe sind
+                        ArrayList<String> membersInDB = dbOperations.readColumn("group"+argsGroupname, "members");
+                        for (int i = 0; i < membersInDB.size(); i++) {
+                            for (int j = 0; j < members.size(); j++) {
+                                if(membersInDB.get(i).equals(members.get(j))){
+                                    members.remove(membersInDB.get(i));
+                                    SW.send("Der Nutzer "+membersInDB.get(i)+" ist bereits in der Gruppe.");
+                                }
+                            }
+                        }
+
+                        if(members.size() != 0){
+                            dbOperations.addUsersToGroup(argsGroupname, members);
+                            SW.send("Die Nutzer " + members + " wurden zu " + argsGroupname + " hinzugefügt.");
+                        }
 
                         return true;
                     } else if(args[3].equalsIgnoreCase("remove")){

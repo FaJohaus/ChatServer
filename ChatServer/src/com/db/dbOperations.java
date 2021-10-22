@@ -174,4 +174,18 @@ public class dbOperations {
         }
         return userInGroup;
     }
+
+    public static void addUsersToGroup(String group, ArrayList<String> members){
+        for (String member: members) {
+            //Erstelle table für alle Gruppen des Nutzers, wenn er noch keinen hat
+            if(!dbOperations.tableExists("groupsof"+member)){
+                dbOperations.createTable("groupsof"+member, "chatGroups", 31);
+            }
+            //Füge diese Gruppe hinzu
+            dbOperations.writeData("groupsof"+member, new String[]{"chatGroups"}, new String[]{group});
+
+            //Füge den Nutzer im table der Gruppe hinzu
+            dbOperations.writeData("group"+group, new String[]{"members"}, new String[]{member});
+        }
+    }
 }
