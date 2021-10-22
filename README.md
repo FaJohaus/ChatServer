@@ -25,12 +25,4 @@
     - delete group *groupname*
     - delete messages</ul>
 - List<ul>
-    - list users
-    - list messages
-    - list groups
-    - list members *group*</ul>
-- Send (Send to all)<ul>
-    - send *message*</ul>
-- Sendto<ul>
-    - sendto *username* *message*<br>
-    - sendto group *groupname* *message*</ul>
+
