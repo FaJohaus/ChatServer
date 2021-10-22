@@ -47,14 +47,52 @@ public class dbCommands extends commandHandler {
                 SW.send("Nutzer " + argsUser + " erfolgreich erstellt.");
                 return true;
             } else if (args[0].equalsIgnoreCase("group")) {
-                String user = SW.getLogin();
-                String argsGroupName = args[0];
-                ArrayList<String> users2Add = new ArrayList<>();
-                users2Add.add(user);
-                for (String userFromArgs: args) {
-                    //arbeite hier grade noch dran aber will das mal hochladen, weil wenn meine festplatte abkackt ist ein tag arbeit fürn arsch
+                String argsGroupName = args[1];
+                if(argsGroupName.length() > 30){
+                    SW.send("Gruppennamen dürfen nicht länger als 30 Zeichen sein.");
+                    return true;
                 }
 
+                //Überprüfe, ob der Gruppenname verfügbar ist
+                if(dbOperations.tableExists("group"+argsGroupName)){
+                    SW.send("Der Gruppenname " + argsGroupName + " ist vergeben.");
+                    return true;
+                }
+
+                String user = SW.getLogin();
+                ArrayList<String> members = new ArrayList<>();
+                members.add(user);
+                members.addAll(Arrays.asList(Arrays.copyOfRange(args, 2, args.length)));
+
+                //Überprüfe, ob alle Mitglieder existieren
+                for (String member: members) {
+                    if(!dbOperations.userExists(member)){
+                        members.remove(member);
+                        SW.send("Der Nutzer " + member + " existiert nicht und kann nicht zur Gruppe hinzugefügt werden.");
+                    }
+                }
+
+                //Erstelle die Gruppe
+                dbOperations.createTable("group"+argsGroupName, "members", 21);
+                for (String member: members) {
+                    //Erstelle table für alle Gruppen des Nutzers, wenn er noch keinen hat
+                    if(!dbOperations.tableExists("groupsof"+member)){
+                        dbOperations.createTable("groupsof"+member, "chatGroups", 31);
+                    }
+                    //Füge diese Gruppe hinzu
+                    dbOperations.writeData("groupsof"+member, new String[]{"chatGroups"}, new String[]{argsGroupName});
+
+                    //Füge den Nutzer im table der Gruppe hinzu
+                    dbOperations.writeData("group"+argsGroupName, new String[]{"members"}, new String[]{member});
+
+                    System.out.println(dbOperations.writeDataString("groupsof"+member, new String[]{"chatGroups"}, new String[]{argsGroupName}));
+                    System.out.println(dbOperations.writeDataString("group"+argsGroupName, new String[]{"members"}, new String[]{member}));
+                }
+
+                System.out.println(Arrays.toString(args));
+                System.out.println(argsGroupName +"\n"+ members);
+
+                return true;
             }
 
         } else if ("login".equalsIgnoreCase(cmd)) {
