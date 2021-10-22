@@ -127,6 +127,15 @@ public class dbCommands extends commandHandler {
                 //Lösche den table der ungelesenen Nachrichten des Nutzers
                 dbOperations.deleteTable("messages"+user);
 
+                //Lösche den Nutzer aus all seinen Gruppen und seinen table für seine Gruppen (falls es welche gibt)
+                if(dbOperations.tableExists("groupsof"+user)){
+                    for (String group: dbOperations.readColumn("groupsof"+user, "chatGroups")) {
+                        dbOperations.deleteData("group"+group, "members", user);
+                    }
+
+                    dbOperations.deleteTable("groupsof"+user);
+                }
+
                 //Logge den Nutzer aus
                 SW.handleLogout();
                 return true;
@@ -218,9 +227,17 @@ public class dbCommands extends commandHandler {
                         dbOperations.changeTableName("messages"+ user, "messages"+ argsNewValue);
                     }
 
+                    //neuen Nutzernamen auch in Gruppen ändern
+                    if(dbOperations.tableExists("groupsof"+user)){
+                        for (String group: dbOperations.readColumn("groupsof"+user, "chatGroups")) {
+                            dbOperations.updateData("group"+group, "members", user, "members", argsNewValue);
+                        }
+                        dbOperations.changeTableName("groupsof"+user, "groupsof"+argsNewValue);
+                    }
+
+
                     //Den Nutzer anmelden (Hier im Gegensatz zu nach change pwd notwendig, damit unter worker.getlogin nun der neue name hinterlegt ist)
                     SW.handleLogin(SW.outputStream, new String[]{argsNewValue, argsPwd});
-
                     return true;
 
                 } else if(argsChange.equalsIgnoreCase("pwd")){
