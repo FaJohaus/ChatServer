@@ -396,6 +396,7 @@ public class dbCommands extends commandHandler {
                         return true;
                     }
 
+                    SW.send("Du bist aktuell Mitglied in diesen Gruppen:");
                     for (String group: groups) {
                         SW.send(group);
                     }
@@ -419,7 +420,23 @@ public class dbCommands extends commandHandler {
 
                 return true;
             } else if(args[0].equalsIgnoreCase("members")){
+                String argsGroupname = args[1];
+                if(!dbOperations.tableExists("group"+argsGroupname)){
+                    SW.send("Die Gruppe "+argsGroupname+" existiert nicht oder du bist kein Mitglied.");
+                    return true;
+                }
 
+                if(!dbOperations.isMemberOfGroup("group"+argsGroupname,SW.getLogin())){
+                    SW.send("Die Gruppe "+argsGroupname+" existiert nicht oder du bist kein Mitglied.");
+                    return true;
+                }
+
+                SW.send("Mitglieder von "+argsGroupname+": ");
+                for (String member: dbOperations.readColumn("group"+argsGroupname, "members")) {
+                    SW.send(member);
+                }
+
+                return true;
             }
         }
         return false;
