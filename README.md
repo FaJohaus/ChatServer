@@ -17,17 +17,17 @@
 - Change<ul>
     - change user name *password* *new_username*<br>
     - change user pwd *password* *new_password*<br>
-    - change group name *old_groupname* *new_groupname*
-    - change group members *group* add *user_to_add1* *user_to_add2* *user_to_add3* ...
+    - change group name *old_groupname* *new_groupname*<br>
+    - change group members *group* add *user_to_add1* *user_to_add2* *user_to_add3* ...<br>
     - change group members *group* remove *user_to_remove1* *user_to_remove2* *user_to_remove3* ...</ul>
 - Delete<ul>
     - delete user *password*<br>
     - delete group *groupname*
     - delete messages</ul>
 - List<ul>
--	list users
-    - list messages
-    - list groups
+    - list users<br>
+    - list messages<br>
+    - list groups<br>
     - list members *group*</ul>
 - Send (Send to all)<ul>
     - send *message*</ul>
