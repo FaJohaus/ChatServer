@@ -7,7 +7,7 @@
 - Login<ul>
     - login *username* *password*</ul>
 - Logout/Logoff<ul>
-    - logout
+    - logout<br>
     - logoff</ul>
 - Quit/Leave<ul>
 	- quit<br>
