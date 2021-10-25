@@ -22,7 +22,7 @@
     - change group members *group* remove *user_to_remove1* *user_to_remove2* *user_to_remove3* ...</ul>
 - Delete<ul>
     - delete user *password*<br>
-    - delete group *groupname*
+    - delete group *groupname*<br>
     - delete messages</ul>
 - List<ul>
     - list users<br>
