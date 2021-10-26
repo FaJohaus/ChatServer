@@ -14,16 +14,6 @@
 	- leave</ul>
 - WhoAmI<ul>
 	- whoami</ul>
-- Change<ul>
-    - change user name *password* *new_username*<br>
-    - change user pwd *password* *new_password*<br>
-    - change group name *old_groupname* *new_groupname*<br>
-    - change group members *group* add *user_to_add1* *user_to_add2* *user_to_add3* ...<br>
-    - change group members *group* remove *user_to_remove1* *user_to_remove2* *user_to_remove3* ...</ul>
-- Delete<ul>
-    - delete user *password*<br>
-    - delete group *groupname*<br>
-    - delete messages</ul>
 - List<ul>
     - list users<br>
     - list messages<br>
@@ -34,5 +24,16 @@
 - Sendto<ul>
     - sendto *username* *message*<br>
     - sendto group *groupname* *message*</ul>
+- Change<ul>
+    - change user name *password* *new_username*<br>
+    - change user pwd *password* *new_password*<br>
+    - change group name *old_groupname* *new_groupname*<br>
+    - change group members *group* add *user_to_add1* *user_to_add2* *user_to_add3* ...<br>
+    - change group members *group* remove *user_to_remove1* *user_to_remove2* *user_to_remove3* ...</ul>
+- Delete<ul>
+    - delete user *password*<br>
+    - delete group *groupname*<br>
+    - delete messages</ul>
+
 
 
