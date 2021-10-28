@@ -10,15 +10,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
+import com.db.dbOperations;
+import com.handlers.dbCommands;
 import com.handlers.generalCommands;
 import com.handlers.rgbCommands;
-import com.handlers.dbCommands;
 import com.utils.chatutils.commandhandler.commandHandler;
 import com.utils.chatutils.rgbChatUtil.rgbChat;
-import com.utils.colors.Colorsbg;
 import com.utils.colors.Colorss;
-
-import com.db.dbOperations;
 
 public class ServerWorker extends Thread {
     public final Socket clientSocket;
@@ -89,8 +87,8 @@ public class ServerWorker extends Thread {
             }
         }
 
-        //Setze den lastonl in der db auf die akutelle Zeit
-        dbOperations.updateData("users","name",login,"lastonl",String.valueOf(System.currentTimeMillis()));
+        // Setze den lastonl in der db auf die akutelle Zeit
+        dbOperations.updateData("users", "name", login, "lastonl", String.valueOf(System.currentTimeMillis()));
         try {
             clientSocket.close();
         } catch (IOException e) {
@@ -98,7 +96,7 @@ public class ServerWorker extends Thread {
         }
     }
 
-    public void handleLogout(){
+    public void handleLogout() {
         List<ServerWorker> workerList = server.getWorkerList();
         // send other online users current user's status
         String onlineMsg = login + " ist nun offline.";
@@ -107,10 +105,11 @@ public class ServerWorker extends Thread {
                 worker.send(onlineMsg);
             }
         }
-        //Setze den lastonl in der db auf die akutelle Zeit
-        dbOperations.updateData("users","name", getLogin(),"lastonl",String.valueOf(System.currentTimeMillis()));
+        // Setze den lastonl in der db auf die akutelle Zeit
+        dbOperations.updateData("users", "name", getLogin(), "lastonl", String.valueOf(System.currentTimeMillis()));
 
-        send("Du bist nun von " + getLogin() + " abgemeldet. Melde dich wieder mit einem Account an, um den ChatServer benutzen zu können.");
+        send("Du bist nun von " + getLogin()
+                + " abgemeldet. Melde dich wieder mit einem Account an, um den ChatServer benutzen zu können.");
         login = null;
     }
 
@@ -123,8 +122,8 @@ public class ServerWorker extends Thread {
             String login = tokens[0];
             String password = tokens[1];
 
-            if(dbOperations.userExists(login) && dbOperations.pwdCorrect(login, password)) {
-                String msg = Colorss.ANSI_BRIGHT_RED.getsit() + "Erfolgreich angemeldet als "+login+"\n";
+            if (dbOperations.userExists(login) && dbOperations.pwdCorrect(login, password)) {
+                String msg = Colorss.ANSI_BRIGHT_RED.getsit() + "Erfolgreich angemeldet als " + login + "\n";
                 try {
                     outputStream.write(msg.getBytes(StandardCharsets.UTF_8));
                 } catch (IOException e) {
@@ -143,7 +142,7 @@ public class ServerWorker extends Thread {
                     }
                 }
 
-                //Setze den lastonl in der db auf "0" (soll heißen, der Nutzer ist online)
+                // Setze den lastonl in der db auf "0" (soll heißen, der Nutzer ist online)
                 dbOperations.updateData("users", "name", login, "lastonl", "online");
             } else {
                 String msg = "error login\n";
@@ -156,17 +155,18 @@ public class ServerWorker extends Thread {
         }
     }
 
-    public boolean loginIsNull(){
-        if(login == null) return true;
+    public boolean loginIsNull() {
+        if (login == null)
+            return true;
         return false;
     }
 
-    public boolean equalsLogin(String s){
+    public boolean equalsLogin(String s) {
         return login.equals(s);
     }
 
     public void send(String msg) {
-        if(!loginIsNull()){
+        if (!loginIsNull()) {
             try {
                 outputStream.write(rgbChat.Contiues_RGB(msg + "\r\n").getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
@@ -175,7 +175,7 @@ public class ServerWorker extends Thread {
         }
     }
 
-    public void send2Null(String msg){
+    public void send2Null(String msg) {
         try {
             outputStream.write(rgbChat.Contiues_RGB(msg + "\r\n").getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
@@ -183,37 +183,40 @@ public class ServerWorker extends Thread {
         }
     }
 
-    public void sendTo(String receiver, String msg){
-        for (ServerWorker worker2getMsg: server.workerList) {
-            if(worker2getMsg.getLogin().equals(receiver)){
+    public void sendTo(String receiver, String msg) {
+        for (ServerWorker worker2getMsg : server.workerList) {
+            if (worker2getMsg.getLogin().equals(receiver)) {
                 worker2getMsg.send(msg);
             }
         }
     }
 
-    public void sendToWithDBsafe(String receiver, String message){
+    public void sendToWithDBsafe(String receiver, String message) {
 
-        //Überprüfe, ob der Empfänger existiert
-        if(!dbOperations.userExists(receiver)){
+        // Überprüfe, ob der Empfänger existiert
+        if (!dbOperations.userExists(receiver)) {
             send("Der Nutzer " + receiver + " existiert nicht.");
             return;
         }
 
-        //Überprüfe, ob der Empfänger online ist, wenn nicht speichere die Nachricht in der db
-        if(dbOperations.readValue("users", "name", receiver, "lastonl").equals("online")){
+        // Überprüfe, ob der Empfänger online ist, wenn nicht speichere die Nachricht in
+        // der db
+        if (dbOperations.readValue("users", "name", receiver, "lastonl").equals("online")) {
             sendTo(receiver, message);
         } else {
-            if(message.length() > 1000){
-                send(receiver+" ist grade nicht online und deine Nachricht ist zu lang zum speichern, bitte fasse dich etwas kürzer.");
+            if (message.length() > 1000) {
+                send(receiver
+                        + " ist grade nicht online und deine Nachricht ist zu lang zum speichern, bitte fasse dich etwas kürzer.");
             }
-            dbOperations.createTable("messages"+receiver,"messages", 1000);
-            dbOperations.writeData("messages"+receiver, new String[]{"messages"}, new String[]{message});
-            send(receiver+" ist grade nicht online, deine Nachricht wurde gespeichert und er/sie kann sie lesen, wenn er/sie online ist.");
+            dbOperations.createTable("messages" + receiver, "messages", 1000);
+            dbOperations.writeData("messages" + receiver, new String[] { "messages" }, new String[] { message });
+            send(receiver
+                    + " ist grade nicht online, deine Nachricht wurde gespeichert und er/sie kann sie lesen, wenn er/sie online ist.");
         }
     }
 
-    public void sendToAll(String msg){
-        for (ServerWorker worker: server.workerList) {
+    public void sendToAll(String msg) {
+        for (ServerWorker worker : server.workerList) {
             worker.send(msg);
         }
     }

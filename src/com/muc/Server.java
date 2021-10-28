@@ -3,9 +3,9 @@ package com.muc;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.db.database;
 
 public class Server extends Thread {
@@ -14,7 +14,7 @@ public class Server extends Thread {
     public ArrayList<ServerWorker> workerList = new ArrayList<>();
 
     public Server(int serverPort) {
-        //Überprüfe Datenbankverbindung
+        // Überprüfe Datenbankverbindung
         database a = new database();
 
         this.serverPort = serverPort;
