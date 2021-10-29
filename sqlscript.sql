@@ -1,0 +1,10 @@
+--tables
+--TABLE 
+
+CREATE TABLE IF NOT EXISTS users (
+
+name VARCHAR(21) NOT NULL,
+pwd VARCHAR(21) NOT NULL,
+lasonl VARCHAR(50) NOT NULL,
+
+)
