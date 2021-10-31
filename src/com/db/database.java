@@ -6,9 +6,9 @@ import java.sql.*;
  * database
  */
 public class database {
-    static final String URL = "jdbc:mysql://172.30.207.35:1433/userdb";
+    static final String URL = String.format("jdbc:mysql://localhost:3306/" + System.getenv("MYSQL_DATABASE")); // "jdbc:mysql://172.30.207.35:1433/userdb";
     static final String USER = "root";
-    static final String PWD = "Jonas";
+    static final String PWD = System.getenv("MYSQL_ROOT_PASSWORD");
 
     static Statement myStatement = null;
 
@@ -22,6 +22,7 @@ public class database {
             this.myStatement = myConnection.createStatement();
 
         } catch (SQLException throwables) {
+            System.out.println(throwables.getMessage());
             System.err.println("Es konnte keine Verbindung zur Datenbank aufgebaut werden.");
             System.exit(1);
         }
