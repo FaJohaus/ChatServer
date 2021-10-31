@@ -15,13 +15,14 @@ public class database {
     public database() {
 
         try {
+            Class.forName("com.mysql.jdbc.Driver");
             // Connect to database
             Connection myConnection = DriverManager.getConnection(URL, USER, PWD);
 
             // Create a statememt
             this.myStatement = myConnection.createStatement();
 
-        } catch (SQLException throwables) {
+        } catch (SQLException | ClassNotFoundException throwables) {
             System.out.println(throwables.getMessage());
             System.err.println("Es konnte keine Verbindung zur Datenbank aufgebaut werden.");
             System.exit(1);
