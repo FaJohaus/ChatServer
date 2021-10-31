@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  chatserver:
+    image: 21jon/chatserver:latest
+    env_file:
+      - ./.env
+    ports:
+      - "${CHAT_PORT}:${CHAT_PORT}"
+    container_name: chatserver
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      mso_rooms:
+        ipv4_address: 10.20.0.10
+
+  db:
+    env_file:
+      - ./.env
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    container_name: mysql-database-prod
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_ROOT_PASSWORD
+    networks:
+      mso_rooms:
+        ipv4_address: 10.20.0.11
+networks:
+  mso_rooms:
+    external: true
+    name: mso_rooms

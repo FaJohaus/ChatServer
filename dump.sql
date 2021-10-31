@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS users (
+name VARCHAR(21),
+pwd VARCHAR(21),
+lasonl VARCHAR(50)
+)
