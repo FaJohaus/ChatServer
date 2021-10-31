@@ -2,7 +2,7 @@ version: "3"
 
 services:
   chatserver:
-    build: ./
+    image: 21jon/chatserver:latest
     env_file:
       - ./.env
     ports:
