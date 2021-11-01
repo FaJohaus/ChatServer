@@ -35,5 +35,5 @@
     - delete group *groupname*<br>
     - delete messages</ul>
 - rbf<ul>
-    -rbf speed \<double\> changes the speed of the colorchange
+    -rbf speed \<double\> changes the speed of the colorchange<br>
     -rbf activate swiches the Rainbow chat on or of
