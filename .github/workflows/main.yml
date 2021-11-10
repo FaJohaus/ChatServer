@@ -30,4 +30,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: 21jon/chatserver:latest,name/app:${{github.sha}}
+          tags: 21jon/chatserver:latest,21jon/chatserver:${{github.sha}}
